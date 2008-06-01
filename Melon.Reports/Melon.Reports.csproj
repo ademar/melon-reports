@@ -1,0 +1,81 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7F7020AE-98ED-4AA8-9730-71FF7E23D3D5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Melon.Reports</RootNamespace>
+    <AssemblyName>Melon.Reports</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ExpressionBuilder.cs" />
+    <Compile Include="AbstractCalculator.cs" />
+    <Compile Include="Objects\Band.cs" />
+    <Compile Include="Objects\BandCollection.cs" />
+    <Compile Include="Objects\BasicElement.cs" />
+    <Compile Include="Objects\Bookmark.cs" />
+    <Compile Include="Calculator.cs" />
+    <Compile Include="Color.cs" />
+    <Compile Include="Objects\Document.cs" />
+    <Compile Include="Objects\Expression.cs" />
+    <Compile Include="Objects\Field.cs" />
+    <Compile Include="Objects\Font.cs" />
+    <Compile Include="Generator.cs" />
+    <Compile Include="Objects\Group.cs" />
+    <Compile Include="Objects\GroupChangeEventHandler.cs" />
+    <Compile Include="Objects\Image.cs" />
+    <Compile Include="Objects\ImageName.cs" />
+    <Compile Include="Objects\Page.cs" />
+    <Compile Include="Objects\PageCollection.cs" />
+    <Compile Include="Objects\Parameter.cs" />
+    <Compile Include="Objects\Rectangle.cs" />
+    <Compile Include="Objects\Report.cs" />
+    <Compile Include="Objects\Text.cs" />
+    <Compile Include="Objects\Variable.cs" />
+    <Compile Include="Parser.cs" />
+    <Compile Include="ReportReader.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Schemas\melon-0.5.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Include="Schemas\melon-0.5.xsx">
+      <DependentUpon>melon-0.5.xsd</DependentUpon>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

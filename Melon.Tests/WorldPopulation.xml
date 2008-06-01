@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MelonReport title="Melon Reports are great" xmlns="melon-0.5.xsd" width="612" height="792" left-margin="20" right-margin="20" top-margin="20" botton-margin="20" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Connection String="Provider=MySql;Server=localhost;Database=world;User ID=user;Password=password;"></Connection>
+	<!-- the query used to fill this report-->
+	<QueryString><![CDATA[SELECT * FROM Country]]></QueryString>
+	<!-- declare the fields you are going to use in expressions-->
+	<Field name="Name" type="System.String"/>
+	<Field name="Continent" type="System.String"/>
+	<Field name="Region" type="System.String"/>
+	<Field name="Population" type="System.Int64"/>
+	<!-- this variables can be used on expressions and to set the group invariants-->
+	<Variable name="FirstLetter" type="System.String" level="report"  formula="none">
+		Name.Substring(0,1).ToUpper()
+	</Variable>
+	<Variable name="Country" type="System.String" level="report"  formula="none">
+		Name
+	</Variable>
+	<!-- fonts used on the report -->
+	<ReportFont name="F1" fontName="Helvetica" default="true" />
+	<ReportFont name="F2" fontName="Helvetica" />
+	<Group name="FirstLetterGroup" invariant="FirstLetter">
+		<groupHeader>
+			<Band height="20">
+				<Rectangle x="10" y="1" height="15" width="550" bordercolor="#FFDDDD" fillcolor="#FFDDDD"/>
+				<StaticText font="Arial" x="30" y="13" font-size="12" color="#FF0000">
+					Countries starting with letter :
+				</StaticText>
+				<Expression x="250" y="13" font="Arial"  font-size="12" type="System.String">FirstLetter</Expression>
+			</Band>
+		</groupHeader>
+		<groupFooter>
+			<Band height="17">
+				<!--
+				<StaticText font="Arial" x="450" y="13" font-size="12" color="#ff00ff">
+					Subtotal :
+				</StaticText>
+			
+				<ReportVariable  variable="GROUP_COUNTER" x="500" y="13" color="#ff00ff" font-size="12" font="Arial" />
+				
+				<Rectangle x="10" y="15" height="0" width="550" bordercolor="#000000" fillcolor="#000000"/>
+				-->
+			</Band>
+		</groupFooter>
+	</Group>
+	<PageHeader>
+		<Band height="70">
+			<Rectangle x="10" y="10" height="30" width="490" bordercolor="#0000ff" fillcolor="#00ff00"/>
+			<StaticText alignment="left" font="Arial" x="200" y="30" font-size="14" color="#000000">Country List</StaticText>
+			<!--
+			<Image href="C:\Temp\melon.jpg" x="510" y="10" width="49" height="32"/>
+			-->
+			<StaticText alignment="left" font="Arial" x="30" y="60" font-size="14" color="#ff0000">Name</StaticText>
+			<StaticText alignment="left" font="Arial" x="80" y="60" font-size="14" color="#ff0000">Population</StaticText>
+			<StaticText alignment="left" font="Arial" x="300" y="60" font-size="14" color="#ff0000">Continent</StaticText>
+			<Rectangle x="10" y="65" height="0" width="550" bordercolor="#000000" fillcolor="#000000"/>
+		</Band>
+	</PageHeader>
+	<Detail>
+		<Band height="20">
+			<StaticText alignment="left" font="Arial" x="20" y="10" font-size="10" color="#000000" >-</StaticText>
+			<Expression x="30" y="10" font="Arial"  font-size="12" type="System.String">Name</Expression>
+			<Expression x="80" y="10" font="Arial"  font-size="10" type="System.Int64">Population</Expression>
+			<Expression x="300" y="10" font="Arial"  font-size="12" type="System.String">Continent</Expression>
+		</Band>
+	</Detail>
+	<PageFooter>
+		<Band height="40">
+			<Rectangle x="10" y="1" height="0" width="550" bordercolor="#000000" fillcolor="#000000"/>
+			<StaticText alignment="left" font="Arial" x="200" y="15" font-size="10" color="#0000ff">Copyright Melon Reports 2001-2002</StaticText>
+			<Expression x="400" y="15" font="Helvetica" font-size="10" type="System.String">System.DateTime.Today.ToShortDateString()</Expression>
+		</Band>
+	</PageFooter>
+</MelonReport>

@@ -1,0 +1,74 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{958E134C-DBF6-485F-B3B0-E83849B09B5D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Melon.Pdf</RootNamespace>
+    <AssemblyName>Melon.Pdf</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Administrator\My Documents\Downloads\net-20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Imaging\AbstractImage.cs" />
+    <Compile Include="Imaging\ColorDevice.cs" />
+    <Compile Include="Imaging\ColorSpace.cs" />
+    <Compile Include="Imaging\ColorTable.cs" />
+    <Compile Include="Imaging\GifImage.cs" />
+    <Compile Include="Imaging\ImageFormatException.cs" />
+    <Compile Include="Imaging\JpgImage.cs" />
+    <Compile Include="Imaging\WinImage.cs" />
+    <Compile Include="Objects\DCTFilter.cs" />
+    <Compile Include="Objects\Filter.cs" />
+    <Compile Include="Objects\FlateFilter.cs" />
+    <Compile Include="Objects\LZWFilter.cs" />
+    <Compile Include="Objects\PDFDocument.cs" />
+    <Compile Include="Objects\PDFFont.cs" />
+    <Compile Include="Objects\PDFImage.cs" />
+    <Compile Include="Objects\PDFInfo.cs" />
+    <Compile Include="Objects\PDFObject.cs" />
+    <Compile Include="Objects\PDFOutline.cs" />
+    <Compile Include="Objects\PDFPage.cs" />
+    <Compile Include="Objects\PDFPages.cs" />
+    <Compile Include="Objects\PDFResources.cs" />
+    <Compile Include="Objects\PDFRoot.cs" />
+    <Compile Include="Objects\PDFStream.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- edited with XML Spy v4.3 U (http://www.xmlspy.com) by ademar (whoCares) -->
+<xs:schema targetNamespace="melon-0.5.xsd" xmlns="melon-0.5.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" version="0.5" id="melon">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">Melon's reports definition schema</xs:documentation>
+	</xs:annotation>
+	<xs:element name="MelonReport" type="Report">
+		<xs:annotation>
+			<xs:documentation> root element of every melon report </xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="Report">
+		<xs:sequence>
+			<xs:element name="Connection" type="connectionString" />
+			<xs:element name="QueryString" type="xs:string" />
+			<xs:element name="Field" type="parameter" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Parameter" type="field" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Variable" type="variable" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="ReportFont" type="reportFont" maxOccurs="unbounded" />
+			<xs:element name="Group" type="group" minOccurs="0" maxOccurs="unbounded" />
+			<!--
+			<xs:element name="Title" type="bandContainer"/>
+			<xs:element name="ReportHeader" type="bandContainer"/>
+			-->
+			<xs:element name="PageHeader" type="bandContainer" />
+			<xs:element name="Detail" type="bandContainer" />
+			<xs:element name="PageFooter" type="bandContainer" />
+			<!--
+			<xs:element name="Summary" type="bandContainer"/>
+			-->
+		</xs:sequence>
+		<xs:attribute name="title" type="xs:string" default="Untitled" />
+		<xs:attribute name="width" type="xs:positiveInteger" use="required" />
+		<xs:attribute name="height" type="xs:positiveInteger" use="required" />
+		<xs:attribute name="left-margin" type="xs:positiveInteger" default="20" />
+		<xs:attribute name="right-margin" type="xs:positiveInteger" default="20" />
+		<xs:attribute name="top-margin" type="xs:positiveInteger" default="20" />
+		<xs:attribute name="botton-margin" type="xs:positiveInteger" default="20" />
+	</xs:complexType>
+	<xs:complexType name="group">
+		<xs:sequence>
+			<xs:element name="groupHeader" type="bandContainer" />
+			<xs:element name="groupFooter" type="bandContainer" />
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required" />
+		<xs:attribute name="invariant" type="xs:string" use="required" />
+	</xs:complexType>
+	<xs:complexType name="bandContainer">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="Band" type="band" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="band">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="StaticText" type="textType" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Expression" type="expressionType" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Image" type="imageType" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Rectangle" type="rectangle" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="ReportVariable" type="reportVariable" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Bookmark" type="bookmarkType" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="height" type="xs:positiveInteger" use="required" />
+	</xs:complexType>
+	<!-- connectionString type -->
+	<xs:complexType name="connectionString">
+		<xs:attribute name="String" type="xs:string" use="required" />
+	</xs:complexType>
+	<!-- parameter type -->
+	<xs:complexType name="parameter">
+		<xs:attribute name="name" type="xs:string" use="required" />
+		<xs:attribute name="type" type="xs:string" default="string" />
+	</xs:complexType>
+	<!-- field type -->
+	<xs:complexType name="field">
+		<xs:attribute name="name" type="xs:string" />
+		<xs:attribute name="type" type="xs:string" default="string" />
+	</xs:complexType>
+	<!-- variable definition -->
+	<xs:complexType name="variable">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="name" type="xs:string" />
+				<xs:attribute name="type" type="xs:string" use="required" />
+				<xs:attribute name="level" type="levels" use="required" />
+				<xs:attribute name="group" type="xs:string" />
+				<xs:attribute name="formula" type="calculations" use="required" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:simpleType name="levels">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="none" />
+			<xs:enumeration value="report" />
+			<xs:enumeration value="page" />
+			<xs:enumeration value="group" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="calculations">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="none" />
+			<xs:enumeration value="sum" />
+			<xs:enumeration value="average" />
+			<xs:enumeration value="count" />
+			<xs:enumeration value="lowest" />
+			<xs:enumeration value="highest" />
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- Font type definition -->
+	<xs:complexType name="reportFont">
+		<xs:attribute name="name" type="xs:string" />
+		<xs:attribute name="fontName" type="xs:string" />
+		<xs:attribute name="default" type="xs:boolean" />
+	</xs:complexType>
+	<!-- static text -->
+	<xs:complexType name="staticText">
+		<xs:choice maxOccurs="unbounded">
+			<xs:element name="Text" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+		</xs:choice>
+		<xs:attribute name="alignment" type="textAlignment" />
+	</xs:complexType>
+	<xs:complexType name="font">
+		<xs:sequence>
+			<xs:element name="Text" />
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required" />
+	</xs:complexType>
+	<!-- texto -->
+	<xs:complexType name="textType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="alignment" type="textAlignment" />
+				<xs:attribute name="x" type="xs:nonNegativeInteger" use="required" />
+				<xs:attribute name="y" type="xs:nonNegativeInteger" use="required" />
+				<xs:attribute name="font" type="xs:string" />
+				<xs:attribute name="font-size" type="xs:positiveInteger" />
+				<xs:attribute name="color" type="xs:string" default="#000000" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<!-- expresion-->
+	<xs:complexType name="expressionType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="alignment" type="textAlignment" />
+				<xs:attribute name="x" type="xs:nonNegativeInteger" use="required" />
+				<xs:attribute name="y" type="xs:nonNegativeInteger" use="required" />
+				<xs:attribute name="font" type="xs:string" />
+				<xs:attribute name="font-size" type="xs:positiveInteger" />
+				<xs:attribute name="type" type="xs:string" use="required" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<!-- special variables -->
+	<xs:complexType name="reportVariable">
+		<xs:attribute name="alignment" type="textAlignment" />
+		<xs:attribute name="x" type="xs:nonNegativeInteger" use="required" />
+		<xs:attribute name="y" type="xs:nonNegativeInteger" use="required" />
+		<xs:attribute name="font" type="xs:string" />
+		<xs:attribute name="font-size" type="xs:positiveInteger" />
+		<xs:attribute name="color" type="xs:string" default="#000000" />
+		<xs:attribute name="variable" type="specialVariables" />
+	</xs:complexType>
+	<!-- image type -->
+	<xs:complexType name="imageType">
+		<xs:attribute name="href" type="xs:string" use="required" />
+		<xs:attribute name="x" type="xs:nonNegativeInteger" use="required" />
+		<xs:attribute name="y" type="xs:nonNegativeInteger" use="required" />
+		<xs:attribute name="width" type="xs:positiveInteger" use="required" />
+		<xs:attribute name="height" type="xs:positiveInteger" use="required" />
+	</xs:complexType>
+	<!-- rectangulo -->
+	<xs:complexType name="rectangle">
+		<xs:attribute name="x" type="xs:nonNegativeInteger" />
+		<xs:attribute name="y" type="xs:nonNegativeInteger" />
+		<xs:attribute name="width" type="xs:nonNegativeInteger" />
+		<xs:attribute name="height" type="xs:nonNegativeInteger" />
+		<xs:attribute name="fillcolor" type="xs:string" />
+		<xs:attribute name="bordercolor" type="xs:string" />
+	</xs:complexType>
+	<!-- bookmarks definition-->
+	<xs:complexType name="bookmarkType">
+		<xs:attribute name="id" type="xs:string" default="null" />
+		<xs:attribute name="var" type="xs:string" />
+		<xs:attribute name="parent" type="xs:string" default="null"/>
+	</xs:complexType>
+	<!-- aligment enumeration -->
+	<xs:simpleType name="textAlignment">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="left" />
+			<xs:enumeration value="right" />
+			<xs:enumeration value="center" />
+			<xs:enumeration value="justified" />
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- special variables enumaration -->
+	<xs:simpleType name="specialVariables">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="GROUP_COUNTER" />
+			<xs:enumeration value="PAGE_N_OF_M" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="reportBand">
+		<xs:sequence>
+			<xs:element name="content" type="staticText" />
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>
