@@ -8,6 +8,6 @@ namespace Melon.Reports.Objects
 	public class Rectangle : BasicElement
 	{
 		public int x, y, height, width;
-		public Color fillcolor, bordercolor;
+		public RgbColor fillcolor, bordercolor;
 	}
 }

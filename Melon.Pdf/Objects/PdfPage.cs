@@ -33,10 +33,10 @@ namespace Melon.Pdf.Objects
 		}
 
 
-		public void Text(string text, double x, double y, string font, double fontSize, Color color)
+		public void DrawText(string text, double x, double y, string font, double fontSize, RgbColor rgbColor)
 		{
 			Content.SaveState();
-			Content.SetRGBColorFill(color.Red, color.Green, color.Blue);
+			Content.SetRGBColorFill(rgbColor.Red, rgbColor.Green, rgbColor.Blue);
 			Content.BeginText();
 			Content.SetFont(font, fontSize);
 			Content.SetTextPos(x, y);
@@ -45,9 +45,33 @@ namespace Melon.Pdf.Objects
 			Content.RestoreState();
 		}
 
-		public void Image(string imageName, double x, double y, double width, double height)
+		public void DrawImage(string imageName, double x, double y, double _width, double _height)
 		{
-			Content.ShowImage(imageName,x,y,width,height);
+			Content.ShowImage(imageName, x, y, _width, _height);
+		}
+
+		public void DrawRectangle(double x, double y, double _width, double _height, RgbColor bordercolor, RgbColor fillcolor)
+		{
+			Content.SaveState();
+			Content.SetRGBColorFill(fillcolor.Red, fillcolor.Green, fillcolor.Blue);
+			Content.SetRGBColorStroke(bordercolor.Red, bordercolor.Green, bordercolor.Blue);
+			Content.ShowRectangle(x, y , _width, _height);
+			Content.RestoreState();
+		}
+
+		public void DrawText(string text, double x, double y, PdfFont font, double fontzsize, RgbColor color)
+		{
+			DrawText(text, x, y, font.FontName, fontzsize, color);
+		}
+
+		public void DrawImage(PdfImage pdfImage, double x, double y, double _width, double _height)
+		{
+			DrawImage(pdfImage.Name,x,y,_width,_height);
+		}
+
+		public void DrawImage(PdfImage pdfImage, double x, double y)
+		{
+			DrawImage(pdfImage.Name, x, y, pdfImage.Width, pdfImage.Height);
 		}
 	}
 }

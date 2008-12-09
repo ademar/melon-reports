@@ -13,6 +13,6 @@ namespace Melon.Reports.Objects
 			this.url = url;
 		}
 
-		public ImageName IName { get; set; }
+		public ImageName ImageName { get; set; }
 	}
 }

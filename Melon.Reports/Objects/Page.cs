@@ -53,7 +53,7 @@ namespace Melon.Reports.Objects
 				if (current is Text)
 				{
 					var t1 = (Text) it.Current;
-					var t2 = new Text(t1.Label, t1.Align, t1.X, t1.Y) {FontSize = t1.FontSize, color = t1.color};
+					var t2 = new Text(t1.Label, t1.Align, t1.X, t1.Y) {FontSize = t1.FontSize, rgbColor = t1.rgbColor};
 
 					AddElement(t2, h);
 				}
@@ -64,7 +64,7 @@ namespace Melon.Reports.Objects
 					var t2 = new Text(e1.Value.ToString(), Text.Alignment.Left, e1.X, e1.Y)
 					         	{
 					         		FontSize = e1.FontSize,
-					         		color = new Color("#000000")
+					         		rgbColor = new RgbColor("#000000")
 					         	};
 					AddElement(t2, h);
 				}

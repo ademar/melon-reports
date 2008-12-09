@@ -20,7 +20,7 @@ namespace Melon.Pdf.Imaging
 		protected ColorSpace m_colorSpace;
 		protected Filter m_filter;
 
-
+		/**/
 		protected AbstractImage(string href)
 		{
 			m_href = href;

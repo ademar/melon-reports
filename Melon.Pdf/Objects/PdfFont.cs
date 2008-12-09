@@ -8,17 +8,23 @@ namespace Melon.Pdf.Objects
 		protected string Subtype;
 		protected string BaseFont;
 
-		public PdfFont(int number, string fontname, string subtype,
+		public PdfFont(int number, /*string fontname,*/ string subtype,
 		               string basefont) : base(number)
 		{
-			FontName = fontname;
+			//FontName = fontname;
 			Subtype = subtype;
 			BaseFont = basefont;
 
 			Encoding = "WinAnsiEncoding";
 		}
 
-		public string FontName { get; set; }
+		
+		//public string FontName { get; set; }
+		public string FontName
+		{
+			get { return "Font" + Number; }
+		}
+
 		public object Encoding { get; set; }
 
 		public override string ToPdf()

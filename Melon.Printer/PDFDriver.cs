@@ -17,14 +17,18 @@ namespace Melon.Printer
 
 			foreach (Font font in document.Fonts)
 			{
-				pdf.AddFont(font.Name, PdfFontTypes.TYPE1, font.FontName);
-				if (font.IsDefault) defaultFont = font.Name;
+				
+				var pdfFont = pdf.CreateFont(/*font.Name, */PdfFontTypes.TYPE1, font.FontName);
+				if (font.IsDefault) defaultFont = pdfFont.FontName;
 			}
 
 			foreach (Image image in document.Images)
 			{
 				var wi = new WinImage(image.url);
-				image.IName.Name = string.Format("Im{0}", pdf.AddImage(wi));
+
+				var pdfImage = pdf.CreateImage(wi);
+
+				image.ImageName.Name = pdfImage.Name;
 			}
 
 			foreach (Page page in document.Pages)

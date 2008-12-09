@@ -160,7 +160,7 @@ namespace Melon.Reports
 								fontSize = XmlConvert.ToInt16(reader.GetAttribute("font-size"));
 								var color = reader.GetAttribute("color");
 								var content = reader.ReadString();
-								var t = new Text(content, Text.Alignment.Left, x, y) {FontSize = fontSize, color = new Color(color)};
+								var t = new Text(content, Text.Alignment.Left, x, y) {FontSize = fontSize, rgbColor = new RgbColor(color)};
 								band.Elements.Add(t);
 								break;
 							case "Expression":
@@ -191,12 +191,12 @@ namespace Melon.Reports
 								{
 									i = new Image(url, x, y) {width = width, height = height};
 									report.ImageCollection.Add(url, i); //Add to global image array
-									i.IName = new ImageName();
+									i.ImageName = new ImageName();
 									band.Elements.Add(i);
 								}
 								else
 								{
-									var i2 = new Image(url, x, y) {width = width, height = height, IName = i.IName};
+									var i2 = new Image(url, x, y) {width = width, height = height, ImageName = i.ImageName};
 									//pon el nombre apuntando a la misma referencia
 									// la idea es que estas imagenes comparten el mismo nombre, capice?
 									band.Elements.Add(i2);
@@ -218,8 +218,8 @@ namespace Melon.Reports
 								              		y = y,
 								              		width = width,
 								              		height = height,
-								              		bordercolor = new Color(bordercolor),
-								              		fillcolor = new Color(fillcolor)
+								              		bordercolor = new RgbColor(bordercolor),
+								              		fillcolor = new RgbColor(fillcolor)
 								              	};
 								band.Elements.Add(r);
 								break;

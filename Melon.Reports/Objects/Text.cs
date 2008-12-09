@@ -15,7 +15,7 @@ namespace Melon.Reports.Objects
 			Justified
 		}
 
-		public Color color;
+		public RgbColor rgbColor;
 
 		public Text()
 		{

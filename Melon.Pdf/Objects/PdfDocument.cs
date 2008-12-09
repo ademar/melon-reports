@@ -1,42 +1,42 @@
 // created on 3/14/2002 at 12:18 PM
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text;
+using System.IO;
+using Melon.Pdf.Imaging;
 
 namespace Melon.Pdf.Objects
 {
-	using System.Text;
-	using System.IO;
-	using Imaging;
+	
 
 	public class PdfDocument
 	{
-		protected PdfRoot root;
-		protected PdfPages pages;
-		protected PdfInfo info;
-		protected PdfResources resources;
-		protected PdfOutline outlineRoot;
+		private PdfRoot root;
+		private PdfInfo info;
+		private PdfResources resources;
 
-		protected int objectcounter;
-		protected int imagecounter;
-		protected int currentoffset;
-		protected int xrefOffset;
+		private PdfOutline outlineRoot;
+
+		private int objectcounter;
+		private int imagecounter;
+		private int currentoffset;
+		private int xrefOffset;
 
 		protected IList<PdfObject> trailer = new List<PdfObject>();
 
 		public PdfDocument()
 		{
-			pages = MakePages();
-			root = MakeRoot(pages);
-			resources = MakeResources();
-			info = MakeInfo();
+			MakeRoot();
+			MakeResources();
+			MakeInfo();
 		}
 
-		private PdfRoot MakeRoot(PdfPages pages)
+		private void MakeRoot()
 		{
-			var root = new PdfRoot(++objectcounter, pages);
+			root = new PdfRoot(++objectcounter, MakePages());
+
 			trailer.Add(root);
-			return root;
+
 		}
 
 		private PdfPages MakePages()
@@ -46,18 +46,16 @@ namespace Melon.Pdf.Objects
 			return pages;
 		}
 
-		private PdfResources MakeResources()
+		private void MakeResources()
 		{
-			var resources = new PdfResources(++objectcounter);
+			resources = new PdfResources(++objectcounter);
 			trailer.Add(resources);
-			return resources;
 		}
 
-		private PdfInfo MakeInfo()
+		private void MakeInfo()
 		{
-			var info = new PdfInfo(++objectcounter);
+			info = new PdfInfo(++objectcounter);
 			trailer.Add(info);
-			return info;
 		}
 
 		public PdfOutline OutlineRoot
@@ -110,31 +108,32 @@ namespace Melon.Pdf.Objects
 			return ps;
 		}
 
-		public string AddFont(string fontname, string subtype, string basefont)
+		public PdfFont CreateFont(/*string fontname,*/ string subtype, string basefont)
 		{
-			var f = new PdfFont(++objectcounter, fontname, subtype, basefont);
+			var f = new PdfFont(++objectcounter, /*fontname,*/ subtype, basefont);
 
 			trailer.Add(f);
 			resources.addFont(f);
 
-			return f.FontName;
+			return f/*.FontName*/;
 		}
 
-		public int AddImage(AbstractImage img)
+		public PdfImage CreateImage(AbstractImage img)
 		{
 			var pdfImg = new PdfImage(++objectcounter, ++imagecounter, img);
 
 			trailer.Add(pdfImg);
 			resources.addImage(pdfImg);
 
-			return imagecounter;
+			//return imagecounter;
+			return pdfImg;
 		}
 
 		public void Print(Stream stream)
 		{
 			outputHeader(stream);
-			var offset = outputXref(stream);
-			outputTrailer(stream, offset);
+			outputXref(stream);
+			outputTrailer(stream);
 		}
 
 		private void outputHeader(Stream stream)
@@ -151,7 +150,7 @@ namespace Melon.Pdf.Objects
 			currentoffset += rem.Length;
 		}
 
-		private void outputTrailer(Stream stream, int offset)
+		private void outputTrailer(Stream stream)
 		{
 			currentoffset += outputXref(stream);
 
@@ -179,30 +178,24 @@ namespace Melon.Pdf.Objects
 			var pdfBuilder = new StringBuilder(string.Format(CultureInfo.InvariantCulture, "xref\n0 {0}\n0000000000 65535 f\x0d\x0a",
 				                                (objectcounter + 1)));
 
-			//var ot = location.GetEnumerator();
-
 			foreach (var offset in location)
 			{
-				//const string padding = "0000000000";
-				//var loc = padding.Substring(offset.Length) + offset;
 				var loc = string.Format(CultureInfo.InvariantCulture,"{0:0000000000}", offset);
 				pdfBuilder.Append(loc + " 00000 n\x0d\x0a");
 			}
 
-			/*while (ot.MoveNext())
-			{
-				var offset = ot.Current.ToString();
-				const string padding = "0000000000";
-				var loc = padding.Substring(offset.Length) + offset;
-				pdfBuilder.Append(loc + " 00000 n\x0d\x0a");
-			}*/
-
+			
 			var bytes = (new ASCIIEncoding()).GetBytes(pdfBuilder.ToString());
 			stream.Write(bytes, 0, bytes.Length);
 			stream.Flush();
+
 			return bytes.Length;
 		}
 
-		
+
+		public PdfImage CreateImage(string uri)
+		{
+			return CreateImage(AbstractImage.Make(uri));
+		}
 	}
 }
