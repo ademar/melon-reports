@@ -8,17 +8,15 @@ namespace Melon.Pdf.Objects
 	/// </summary>
 	public class PDFOutline : PDFObject
 	{
-		string title ; //The text to be displayed on the screen for this item.
+		PDFOutline parent; 
 
-		PDFOutline parent = null; 
+		PDFOutline prev;
+		PDFOutline next;
 
-		PDFOutline prev  = null ;
-		PDFOutline next  = null ;
+		PDFOutline first;
+		PDFOutline last;
 
-		PDFOutline first = null ;
-		PDFOutline last = null ;
-
-		int count = 0 ;
+		int count;
 
 		readonly string dest ;
 
@@ -26,23 +24,12 @@ namespace Melon.Pdf.Objects
 
 		public PDFOutline(int number, string title, string dest):base(number)
 		{
-			this.title = title ;
+			Title = title ;
 			this.dest = dest ;
 		}
 
-		public string Title
-		{
-			get
-			{
-				return title;
-			}
-			set
-			{
-				title = value;
-			}
+		public string Title { get; set; }
 
-		}
-		
 		public void AddItem(PDFOutline outline)
 		{
 			if(childs.Count > 0)
@@ -54,46 +41,42 @@ namespace Melon.Pdf.Objects
 			{
 				first = outline ;
 			}
+
 			childs.Add(outline);
 			outline.parent = this ;
 
 			last = outline;
 		}
 
-		private void UpdateCount()
+		public override string ToPDF()
 		{
-			count ++ ;
-			if (parent!=null) parent.UpdateCount();
-		}
-		
-		 public override string ToPDF()
-		{
-			 StringBuilder str =  new StringBuilder(string.Format("{0} {1} obj\n<<\n", number, generation));
+			 var str =  new StringBuilder(string.Format("{0} {1} obj\n<<\n", Number, Generation));
 
 			 if (parent==null)
 			 {
 				 if(first!=null && last!=null)
 				 {
-					 str.Append(" /First " + first.getReference + "\n");
-					 str.Append(" /Last " + last.getReference + "\n");
+					 str.Append(" /First " + first.Reference + "\n");
+					 str.Append(" /Last " + last.Reference + "\n");
 				 }
 			 }
 			 else
 			 {
-				 str.Append(" /Title (" + title + ")\n");
-				 str.Append(" /Parent " + parent.getReference + "\n");
+				 str.Append(" /Title (" + Title + ")\n");
+				 str.Append(" /Parent " + parent.Reference + "\n");
+
 				 if (first!=null && last!=null)
 				 {
-					 str.Append(" /First " + first.getReference + "\n");
-					 str.Append(" /Last " + last.getReference + "\n");
+					 str.Append(" /First " + first.Reference + "\n");
+					 str.Append(" /Last " + last.Reference + "\n");
 				 }
 				 if (prev!=null)
 				 {
-					 str.Append(" /Prev " + prev.getReference + "\n");
+					 str.Append(" /Prev " + prev.Reference + "\n");
 				 }
 				 if (next!=null)
 				 {
-					 str.Append(" /Next " + next.getReference + "\n");
+					 str.Append(" /Next " + next.Reference + "\n");
 				 }
 				 if (count>0)
 				 {
@@ -105,6 +88,7 @@ namespace Melon.Pdf.Objects
 				 }
 			 }
 			 str.Append(">> endobj\n");
+
 			 return str.ToString();
 		}
 	}

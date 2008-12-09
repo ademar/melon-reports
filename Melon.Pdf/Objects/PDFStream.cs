@@ -1,11 +1,14 @@
 // created on 3/13/2002 at 6:56 PM
+using System;
 using System.Collections;
+using System.Globalization;
 using System.IO;
 using System.Text;
 
 namespace Melon.Pdf.Objects
 {
-	public class PDFStream : PDFObject{
+	public class PDFStream : PDFObject, IDisposable 
+	{
 		
 		protected MemoryStream streamdata = new MemoryStream();
 		
@@ -49,7 +52,7 @@ namespace Melon.Pdf.Objects
 		
 		public override string ToPDF(){
 			
-			/*string s = this.number + " " + this.generation + " obj\n"
+			/*string s = this.number + " " + this.Generation + " obj\n"
 						+ "<< /Length " + streamdata.Length + " >>\nstream\n"
 						+ streamdata + "\nendstream\nendobj\n";
 			return s;*/
@@ -61,7 +64,7 @@ namespace Melon.Pdf.Objects
 			
 			string filterEntry = ApplyFilters();
 			
-			string s = string.Format("{0} {1} obj\n<< /Length {2} {3} >>\n", number, generation, (streamdata.Length), filterEntry);
+			string s = string.Format("{0} {1} obj\n<< /Length {2} {3} >>\n", Number, Generation, (streamdata.Length), filterEntry);
 			ASCIIEncoding encoder = new ASCIIEncoding();
 			byte[] byteholder = encoder.GetBytes(s);
 			stream.Write(byteholder,0,byteholder.Length);
@@ -76,18 +79,20 @@ namespace Melon.Pdf.Objects
 		}
 		
 		public int outputPDFStream(Stream stream){
-			ASCIIEncoding encoder = new ASCIIEncoding();
-			int marker;
+			var encoder = new ASCIIEncoding();
+
 			byte[] b = encoder.GetBytes("stream\n");
 			stream.Write(b,0,b.Length);
 			stream.Flush();
-			marker = b.Length;
+
+			int marker = b.Length;
 			marker += (int)streamdata.Length;
 			streamdata.WriteTo(stream);
 			b = encoder.GetBytes("\nendstream\n");
 			stream.Write(b,0,b.Length);
 			stream.Flush();
 			marker += b.Length;
+
 			return marker;
 		}
 		
@@ -164,35 +169,35 @@ namespace Melon.Pdf.Objects
 		
 		public void SetTextPos(double x, double y)
 		{
-			AddData(x + " " + y + " Td\n");
+			AddData(string.Format(CultureInfo.InvariantCulture, "{0} {1} Td\n", x, y));
 		}
 		
         public void SetRGBColorFill(string red, string green, string blue)
 		{
-			AddData(red + " " + green + " " + blue + " rg\n");
+			AddData(string.Format(CultureInfo.InvariantCulture, "{0} {1} {2} rg\n", red, green, blue));
 		}
 		
 		public void SetRGBColorStroke(string red, string green, string blue)
 		{
-			AddData(red + " " + green + " " + blue + " RG\n");
+			AddData(string.Format(CultureInfo.InvariantCulture, "{0} {1} {2} RG\n", red, green, blue));
 		}
 		
 		public void SetFont(string baseFont,double size)
 		{
-			AddData("/" + baseFont + " " + size + " Tf\n");
+			AddData(string.Format(CultureInfo.InvariantCulture, "/{0} {1} Tf\n", baseFont, size));
 		}
 		
 		public void ShowImage(string imageName, double x , double y, double width,double height)
 		{
 			SaveState();
-			AddData(width + " 0 0 " + height + " " + x + " " + y + " cm\n");
-			AddData("/" + imageName + " Do\n");
+			AddData(string.Format(CultureInfo.InvariantCulture, "{0} 0 0 {1} {2} {3} cm\n", width, height, x, y));
+			AddData(string.Format(CultureInfo.InvariantCulture, "/{0} Do\n", imageName));
 			RestoreState();
 		}
 		
 		public void ShowRectangle(double x, double y, double width, double height)
 		{
-			AddData(x + " " + y + " " + width + " " + height + " re\n");
+			AddData(string.Format(CultureInfo.InvariantCulture, "{0} {1} {2} {3} re\n", x, y, width, height));
 			FillAndStroke();
 		}
 		
@@ -200,5 +205,20 @@ namespace Melon.Pdf.Objects
 		{
 			AddData("B\n");
 		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				streamdata.Close();
+			}
+		}
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
 	}
 }

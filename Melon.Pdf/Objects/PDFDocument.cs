@@ -1,8 +1,8 @@
 // created on 3/14/2002 at 12:18 PM
+using System.Globalization;
+
 namespace Melon.Pdf.Objects
 {
-	
-	using System;
 	using System.Collections;
 	using System.Text;
 	using System.IO;
@@ -14,11 +14,11 @@ namespace Melon.Pdf.Objects
 		protected PDFPages pages;
 		protected PDFInfo info;
 		protected PDFResources resources;
-		protected PDFOutline outlineRoot = null ;
+		protected PDFOutline outlineRoot;
 		
-		protected int objectcounter = 0 ;
-		protected int imagecounter = 0 ;
-		protected int currentoffset = 0 ;
+		protected int objectcounter;
+		protected int imagecounter;
+		protected int currentoffset;
 		protected int xrefOffset;
 		
 		protected ArrayList trailer = new ArrayList();
@@ -32,28 +32,28 @@ namespace Melon.Pdf.Objects
 		
 		protected PDFRoot MakeRoot(PDFPages pages){
 
-			PDFRoot root = new PDFRoot(++objectcounter,pages);
+			var root = new PDFRoot(++objectcounter,pages);
 			trailer.Add(root);
 			return root;
 		}
 
 		protected PDFPages MakePages(){
 
-			PDFPages pages = new PDFPages(++objectcounter);
+			var pages = new PDFPages(++objectcounter);
 			trailer.Add(pages);
 			return pages;
 		}
 
 		protected PDFResources MakeResources(){
 
-			PDFResources resources = new PDFResources(++objectcounter);
+			var resources = new PDFResources(++objectcounter);
 			trailer.Add(resources);
 			return resources;
 		}
 
 		protected PDFInfo MakeInfo(){
 
-			PDFInfo info = new PDFInfo(++objectcounter);
+			var info = new PDFInfo(++objectcounter);
 			trailer.Add(info);
 			return info;
 		}
@@ -76,9 +76,9 @@ namespace Melon.Pdf.Objects
 
 		public PDFOutline MakeOutline(PDFOutline parent,string title,PDFPage page)
 		{
-			string target = "["+ page.getReference + " /XYZ null null 0]";
+			var target = string.Format(CultureInfo.InvariantCulture, "[{0} /XYZ null null 0]", page.Reference);
 
-			PDFOutline outline = new PDFOutline(++objectcounter,title,target);
+			var outline = new PDFOutline(++objectcounter,title,target);
 
 			if(parent!=null)
 			{
@@ -91,7 +91,7 @@ namespace Melon.Pdf.Objects
 
 		public PDFPage MakePage(PDFStream content, int width,int height){
 			
-			PDFPage page = new PDFPage(++objectcounter,resources,content,width,height);
+			var page = new PDFPage(++objectcounter,resources,content,width,height);
 			trailer.Add(page);
 			root.addPage(page);
 			
@@ -100,7 +100,7 @@ namespace Melon.Pdf.Objects
 
 		public PDFStream MakeStream(){
 
-			PDFStream ps = new PDFStream(++objectcounter);
+			var ps = new PDFStream(++objectcounter);
 			trailer.Add(ps);
 
 			return ps;
@@ -108,17 +108,17 @@ namespace Melon.Pdf.Objects
 		
 		public string MakeFont(string fontname, byte subtype,string basefont){
 
-			PDFFont f = new PDFFont(++objectcounter,fontname,subtype,basefont);
+			var f = new PDFFont(++objectcounter,fontname,subtype,basefont);
 
 			trailer.Add(f);
 			resources.addFont(f);
 
-			return f.getName ;
+			return f.FontName ;
 		}
 		
 		public int AddImage(AbstractImage img){
 
-			PDFImage pdfImg = new PDFImage(++objectcounter,++imagecounter,img);
+			var pdfImg = new PDFImage(++objectcounter,++imagecounter,img);
 			trailer.Add(pdfImg);
 			resources.addImage(pdfImg);
 			return imagecounter ;
@@ -126,10 +126,10 @@ namespace Melon.Pdf.Objects
 				
 		public void outputHeader(Stream stream){
 
-			byte[] pdf = (new ASCIIEncoding()).GetBytes("%PDF-1.4\n");
-			stream.Write(pdf,0,pdf.Length);
+			byte[] pdfHeader = (new ASCIIEncoding()).GetBytes("%PDF-1.4\n");
+			stream.Write(pdfHeader,0,pdfHeader.Length);
 			stream.Flush();
-			currentoffset = pdf.Length ;
+			currentoffset = pdfHeader.Length ;
 			
 			//binary remmark as adviced by Adobe
 			byte[] rem ={(byte)'%', 0xAA, 0xAB, 0xAC, 0xAD, (byte)'\n'};
@@ -138,41 +138,41 @@ namespace Melon.Pdf.Objects
 			currentoffset+=rem.Length;
 		}
 		
-		public void outputTrailer(Stream stream){
+		public void outputTrailer(Stream stream, int offset){
 			
 			currentoffset += outputXref(stream);
 
-			String pdf = string.Format("trailer\n<<\n/Size {0}{1}\n/Root {2}\n/Info {3} >>\nstartxref\n{4}\n%%EOF\n", objectcounter, 1, root.getReference, info.getReference, xrefOffset);
+			var pdfTrailer = string.Format(CultureInfo.InvariantCulture, "trailer\n<<\n/Size {0}{1}\n/Root {2}\n/Info {3} >>\nstartxref\n{4}\n%%EOF\n", objectcounter, 1, root.Reference, info.Reference, xrefOffset);
 
-			byte[] bytes = (new ASCIIEncoding()).GetBytes(pdf);
+			byte[] bytes = (new ASCIIEncoding()).GetBytes(pdfTrailer);
 			stream.Write(bytes,0,bytes.Length);
 			stream.Flush();
 			
 		}
-		
-		private int outputXref(Stream stream){
+
+		public int outputXref(Stream stream){
 			
-			ArrayList location = new ArrayList();
+			var location = new ArrayList();
 			
-			IEnumerator it = trailer.GetEnumerator();
+			var it = trailer.GetEnumerator();
 
 			while(it.MoveNext()){
 
-				PDFObject o = (PDFObject)it.Current;
-				location.Insert(o.getNumber-1,currentoffset);
+				var o = (PDFObject)it.Current;
+				location.Insert(o.Number-1,currentoffset);
 				currentoffset+=o.output(stream);
 			}
 
 			xrefOffset = currentoffset;
 
-			StringBuilder pdf = new StringBuilder(string.Format("xref\n0 {0}\n0000000000 65535 f\x0d\x0a", (objectcounter + 1)));
+			var pdf = new StringBuilder(string.Format(CultureInfo.InvariantCulture, "xref\n0 {0}\n0000000000 65535 f\x0d\x0a", (objectcounter + 1)));
 
-			IEnumerator ot = location.GetEnumerator();
+			var ot = location.GetEnumerator();
 
 			while(ot.MoveNext()){
-				string offset = ot.Current.ToString();
-				string padding = "0000000000";
-				string loc = padding.Substring(offset.Length)+offset;
+				var offset = ot.Current.ToString();
+				const string padding = "0000000000";
+				var loc = padding.Substring(offset.Length)+offset;
 				pdf.Append(loc + " 00000 n\x0d\x0a");
 			}
 

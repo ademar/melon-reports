@@ -1,4 +1,6 @@
 // created on 3/13/2002 at 4:12 PM
+using System.Globalization;
+
 namespace Melon.Pdf.Objects
 {
 	
@@ -11,47 +13,21 @@ namespace Melon.Pdf.Objects
 	/// </summary>
 	public class PDFInfo : PDFObject{
 		
-		private string title;
-		private string author;
-		private string subject;
-		private string keywords;
-		private string creator;
+		public string Title;
+		public string Author;
+		public string Subject;
+		public string Keywords;
+		public string Creator;
 
 		private const string producer = "Melon v0.1";
 		
-		public PDFInfo(int number):base(number){
+		public PDFInfo(int number):base(number)
+		{
 		}
 
-		public string setTitle{
-			set {
-				title = value ;
-			}
-		}
-		public string setAuthor{
-			set {
-				author = value ;
-			}
-		}
-		public string setSubject{
-			set {
-				subject = value ;
-			}
-		}
-		public string setKeyWords{
-			set {
-				keywords = value ;
-			}
-		}
-		public string setCreator{
-			set {
-				creator = value ;
-			}
-		}
-		
-		public override string ToPDF(){
-			
-			String s = string.Format("{0} {1} obj\n<< /Type /Info\n/Producer ({2})\n/CreationDate ({3}) >>\nendobj\n", number, generation, producer, DateTime.Now);
-			return s ;
+		public override string ToPDF()
+		{
+			return string.Format(CultureInfo.InvariantCulture, "{0} {1} obj\n<< /Type /Info\n/Producer ({2})\n/CreationDate ({3}) >>\nendobj\n", Number, Generation, producer, DateTime.Now);
 		}
 	}
 }

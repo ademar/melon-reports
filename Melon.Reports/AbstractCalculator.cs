@@ -5,17 +5,17 @@ namespace Melon.Reports
 {
 	public abstract class AbstractCalculator
 	{
-		protected Hashtable variables = null ;
+		protected Hashtable variables;
 
-		public AbstractCalculator(Report report)
+		protected AbstractCalculator(Report report)
 		{
 			variables = report.VariableCollection;
 		}
 
 		public object EvaluateVariable(Variable var)
 		{
-			object expressionValue = EvaluateVariableExpression(var.GetHashCode());
-			object actualValue = var.Value;
+			var expressionValue = EvaluateVariableExpression(var.GetHashCode());
+			var actualValue = var.Value;
 
 			if (var.Formula == Variable.CALCULATION_NONE)
 			{
@@ -23,11 +23,10 @@ namespace Melon.Reports
 				return expressionValue;
 			}
 
-			//from now on tha variable has to be numeric
-			//TODO : check this in some way 
 			if (actualValue == null) actualValue = 0.0 ;
-			double val = (double)actualValue ;
-			if (var.Formula == Variable.CALCULATION_COUNT)//what's this for ??
+			
+			var val = (double)actualValue ;
+			if (var.Formula == Variable.CALCULATION_COUNT)
 			{				
 				val ++ ;
 				var.Value = val ;

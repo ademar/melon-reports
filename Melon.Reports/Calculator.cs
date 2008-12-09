@@ -16,14 +16,14 @@ namespace Melon.Reports
 
 		public void EvaluateBand(Band band,Hashtable fields,Report report)
 		{
-			IEnumerator it = band.Elements.GetEnumerator();
+			var it = band.Elements.GetEnumerator();
 			while(it.MoveNext())
 			{
-				Object o = it.Current;
-				Type type = o.GetType();
+				var o = it.Current;
+				var type = o.GetType();
 				if(type == typeof(Expression))
 				{
-					Expression e = (Expression)o ;
+					var e = (Expression)o ;
 					e.Value = expressionBuilder.EvaluateExpression(e.GetHashCode());
 
 					//Field f = (Field)fields[e.fieldname];
@@ -35,10 +35,10 @@ namespace Melon.Reports
 
 		public void EvaluateExpressions(Report report)
 		{
-			IDictionaryEnumerator it = report.ExpressionCollection.GetEnumerator();
+			var it = report.ExpressionCollection.GetEnumerator();
 			while(it.MoveNext())
 			{
-				Expression e =  (Expression)it.Value ;
+				var e =  (Expression)it.Value ;
 				e.Value = expressionBuilder.EvaluateExpression(e.GetHashCode());
 
 			}

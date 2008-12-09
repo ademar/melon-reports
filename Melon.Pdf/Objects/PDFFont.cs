@@ -1,4 +1,6 @@
 // created on 3/13/2002 at 7:06 PM
+using System.Globalization;
+
 namespace Melon.Pdf.Objects
 {
 
@@ -12,46 +14,32 @@ namespace Melon.Pdf.Objects
 		
 		protected static string[] TypeNames = {"Type0", "Type1", "MMType1", "Type3", "TrueType"};
 		
-		protected string FontName ;
-		protected byte SubType;
-		protected string BaseFont;
-		protected object encoding = null ;
 		
+		protected byte Subtype;
+		protected string BaseFont;
+
 		public PDFFont(int number,string fontname,byte subtype,
 		               string basefont):base(number){
 		    FontName = fontname;
-		    SubType = subtype;
+		    Subtype = subtype;
 		    BaseFont = basefont;
 			
-			encoding = "WinAnsiEncoding";// default
+			Encoding = "WinAnsiEncoding";// default
 		}
-		
-		public string getName{
-			get{
-				return FontName ;
-			}
-		}
-		public object Encoding 
-		{
-			get 
-			{
-				return encoding ;
-			}
-			set 
-			{
-				encoding = value ;
-			}
-		}
-				
+
+		public string FontName { get; set; }
+		public object Encoding { get; set; }
+
 		public override string ToPDF(){
 
-			string s = string.Format("{0} {1} obj\n<< /Type /Font\n/Subtype /{2}\n/Name /{3}\n/BaseFont /{4}", number, generation, TypeNames[SubType], FontName, BaseFont);
+			var s = string.Format(CultureInfo.InvariantCulture,"{0} {1} obj\n<< /Type /Font\n/Subtype /{2}\n/Name /{3}\n/BaseFont /{4}", Number, Generation, TypeNames[Subtype], FontName, BaseFont);
 
-			if (encoding!=null) 
+			if (Encoding!=null) 
 			{
-				s = s + "\n/Encoding /"+(string)encoding ;
+				s = s + "\n/Encoding /"+(string)Encoding ;
 			}
-					s = s	+ " >>\nendobj\n";
+			
+			s = s	+ " >>\nendobj\n";
 						
 			return s;
 		}

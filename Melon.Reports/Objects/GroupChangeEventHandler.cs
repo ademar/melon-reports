@@ -9,25 +9,12 @@ namespace Melon.Reports.Objects
 
 	public class GroupChangeEventArgs : EventArgs 
 	{
-		Report report;
-
 		public GroupChangeEventArgs(Report report)
 		{
-			this.report = report ;
+			Report = report ;
 		}
 
-		public Report Report 
-		{
-			get
-			{
-				return this.report;
-			}
-			set 
-			{
-				this.report = value ;
-			}
-		}
-
+		public Report Report { get; set; }
 	}
 	
 }

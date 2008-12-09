@@ -8,30 +8,29 @@ namespace Melon.Reports
 	/// </summary>
 	public class Color
 	{
-		//double red =0.0,green=0.0,blue=0.0 ;
-
-		string red="0.0",green="0.0",blue="0.0" ;
-		
 		public Color()
-		{			
+		{
+			Blue = "0.0";
+			Green = "0.0";
+			Red = "0.0";
 		}
+
 		public Color (string color)
 		{
 			System.Drawing.Color c  = System.Drawing.Color.FromArgb(Convert.ToInt32(color.Substring(1),16));
 
-			red   = FixDouble((double)c.R / 255); //TODO : check pdf literals definition
-			green = FixDouble((double)c.G / 255); 
-			blue  = FixDouble((double)c.B / 255);
+			Red   = FixDouble((double)c.R / 255); //TODO : check pdf literals definition
+			Green = FixDouble((double)c.G / 255); 
+			Blue  = FixDouble((double)c.B / 255);
 
 
 		}
 
-		private string FixDouble(double dbl)
+		private static string FixDouble(double dbl)
 		{
-			NumberFormatInfo formater = new NumberFormatInfo();
-			formater.NumberDecimalSeparator = "." ;
-			
-			String str = dbl.ToString(formater);
+			var formater = new NumberFormatInfo {NumberDecimalSeparator = "."};
+
+			var str = dbl.ToString(formater);
 			int dec = str.IndexOf(".");
 
 			if (dec!=-1)
@@ -41,26 +40,11 @@ namespace Melon.Reports
 			}
 			return str;
 		}
-		public string Red 
-		{
-			get
-			{
-				return this.red;
-			}
-		}
-		public string Green 
-		{
-			get
-			{
-				return this.green;
-			}
-		}
-		public string Blue
-		{
-			get
-			{
-				return this.blue;
-			}
-		}
+
+		public string Red { get; private set; }
+
+		public string Green { get; private set; }
+
+		public string Blue { get; private set; }
 	}
 }

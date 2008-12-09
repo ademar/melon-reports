@@ -7,52 +7,17 @@ namespace Melon.Reports.Objects
 	/// </summary>
 	public class Parameter
 	{
-
-		private string m_name ;
-		private Type m_type ;
-
-		private Object m_value ;
-
 		public Parameter()
 		{}
 		public Parameter(string name)
 		{
-			this.m_name = name;
-		}
-		public string Name 
-		{
-			set
-			{
-				this.m_name = value ;
-			}
-			get 
-			{
-				return this.m_name;
-			}
+			Name = name;
 		}
 
-		public Type Type 
-		{
-			set 
-			{
-				this.m_type = value ;
-			}
-			get
-			{
-				return this.m_type;
-			}
-		}
+		public string Name { set; get; }
 
-		public Object Value 
-		{
-			get
-			{
-				return this.m_value;
-			}
-			set
-			{
-				this.m_value = value ;
-			}
-		}
+		public Type Type { set; get; }
+
+		public Object Value { get; set; }
 	}
 }

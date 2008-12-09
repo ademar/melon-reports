@@ -1,5 +1,3 @@
-using System;
-
 namespace Melon.Reports.Objects
 {
 	/// <summary>
@@ -8,11 +6,5 @@ namespace Melon.Reports.Objects
 	public class BasicElement
 	{
 		public int  H ;
-		public BasicElement()
-		{
-			//
-			// TODO: Add constructor logic here
-			//
-		}
 	}
 }

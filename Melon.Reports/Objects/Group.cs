@@ -1,5 +1,3 @@
-using System;
-
 namespace Melon.Reports.Objects
 {
 	/// <summary>
@@ -7,15 +5,6 @@ namespace Melon.Reports.Objects
 	/// </summary>
 	public class Group
 	{
-		string name  = null ;
-		string invariant = null ;
-		object actualvalue = null ;
-		int counter = 0 ;
-		bool open = false ;
-
-		BandCollection groupHeader = new BandCollection();
-		BandCollection groupFooter = new BandCollection();
-
 		//event declaration
 		public event GroupChangeEventHandler GroupChange;
 
@@ -28,93 +17,30 @@ namespace Melon.Reports.Objects
 		}
 
 		public Group()
-		{}
+		{
+			GroupFooter = new BandCollection();
+			GroupHeader = new BandCollection();
+		}
 
 		public Group(string name)
 		{
-			this.name = name ;
+			GroupFooter = new BandCollection();
+			GroupHeader = new BandCollection();
+			Name = name ;
 		}
 
-		public string Name 
-		{
-			get 
-			{
-				return this.name ;
-			}
-			set 
-			{
-				this.name = value;
-			}
-		}
-		public string Invariant 
-		{
-			get 
-			{
-				return this.invariant ;
-			}
-			set 
-			{
-				this.invariant = value ;
-			}
-		}
-		public BandCollection GroupHeader
-		{
-			get
-			{
-				return groupHeader ;
-			}
-			set 
-			{
-				this.groupHeader = value ;
-			}
-		}
-		public BandCollection GroupFooter 
-		{
-			get
-			{
-				return groupFooter ;
-			}
-			set 
-			{
-				this.groupFooter = value ;
-			}
-		}
+		public string Name { get; set; }
 
-		public object Value 
-		{
-			set 
-			{
-				this.actualvalue = value ;
-			}
-			get
-			{
-				return this.actualvalue;
-			}
-		}
+		public string Invariant { get; set; }
 
-		public int Counter 
-		{
-			get
-			{
-				return counter ;
-			}
-			set
-			{
-				counter = value ;
-			}
-		}
+		public BandCollection GroupHeader { get; set; }
 
-		public bool IsOpen 
-		{
-			get
-			{
-				return open ;
-			}
-			set 
-			{
-				open = value ;
-			}
-		}
+		public BandCollection GroupFooter { get; set; }
 
+		public object Value { set; get; }
+
+		public int Counter { get; set; }
+
+		public bool IsOpen { get; set; }
 	}
 }

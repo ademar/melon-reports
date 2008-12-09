@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 
 namespace Melon.Reports.Objects
@@ -8,22 +7,16 @@ namespace Melon.Reports.Objects
 	/// </summary>
 	public class PageCollection
 	{
-		ArrayList pages = new ArrayList();
-
 		public PageCollection()
-		{}
+		{
+			Pages = new ArrayList();
+		}
 
 		public void AddPage(Page page)
 		{
-			this.pages.Add(page);
+			Pages.Add(page);
 		}
 
-		public ArrayList Pages 
-		{
-			get 
-			{
-				return this.pages ;
-			}
-		}
+		public ArrayList Pages { get; private set; }
 	}
 }

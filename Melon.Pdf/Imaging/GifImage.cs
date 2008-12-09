@@ -1,9 +1,10 @@
+using System;
 using System.IO;
 using Melon.Pdf.Objects;
 
 namespace Melon.Pdf.Imaging
 {
-	public class GifImage : AbstractImage
+	public class GifImage : AbstractImage, IDisposable 
 	{
 		protected enum gif_states {
 			gif_gather,
@@ -36,8 +37,7 @@ namespace Melon.Pdf.Imaging
 			gif_stop_animating 
 		};
 
-		int datasize = 0;
-		MemoryStream ms = null ;
+		MemoryStream ms;
 
 		public GifImage(string href):base(href)
 		{}
@@ -53,14 +53,14 @@ namespace Melon.Pdf.Imaging
 			//add the LZW filter
 			m_filter = new LZWFilter();//migth need some parameters! '/EarlyChange' for instance
 
-			FileStream ImageHolder = new FileStream(m_href,FileMode.Open,FileAccess.Read,FileShare.Read,8192);
-			int len = (int)ImageHolder.Length;
-			byte[] buf =  new byte[len+1];//the +1 is a dirty hack , don't like it
+			var ImageHolder = new FileStream(m_href,FileMode.Open,FileAccess.Read,FileShare.Read,8192);
+			var len = (int)ImageHolder.Length;
+			var buf =  new byte[len+1];//the +1 is a dirty hack , don't like it
 			ImageHolder.Read(buf,0,len);
 			
-			gif_states state = gif_states.gif_init;
-			int colorTableSize = 0 ;
-			int p  = 0 ;
+			var state = gif_states.gif_init;
+			var colorTableSize = 0 ;
+			var p  = 0 ;
 			
 			while (true)
 			{
@@ -85,15 +85,12 @@ namespace Melon.Pdf.Imaging
 
 						p = 13 ;
 
-						if ((packed_field & 0x80) == 0)
-							state = gif_states.gif_image_start;
-						else
-							state = gif_states.gif_global_colormap ;
+						state = (packed_field & 0x80) == 0 ? gif_states.gif_image_start : gif_states.gif_global_colormap;
 						break;
 						
 					case gif_states.gif_global_colormap :
 						
-						ColorTable ct =  new ColorTable(colorTableSize);
+						var ct =  new ColorTable(colorTableSize);
 
 						for(int i=0 ; i< colorTableSize; i++)
 						{
@@ -120,9 +117,9 @@ namespace Melon.Pdf.Imaging
 						}
 						if (first_code!=0x2c) //invalid format , should be ','
 							throw new ImageFormatException("Invalid GIF format : image separator code (0x2C) not found.");
-						else 
-							state = gif_states.gif_image_header;
 						
+						state = gif_states.gif_image_header;
+
 						break;
 
 					case gif_states.gif_extension:
@@ -211,7 +208,7 @@ namespace Melon.Pdf.Imaging
 						state = gif_states.gif_lzw_start;
 						break;
 					case gif_states.gif_lzw_start:
-						datasize = buf[p++];
+						p++;
 						state = gif_states.gif_sub_block;
 						break;
 					case gif_states.gif_sub_block:
@@ -237,7 +234,6 @@ namespace Melon.Pdf.Imaging
 		{
 			int codelength = 9;
 			int tablelength = 257;
-			int bitsread;
 			int bitstowrite = 0;
 			int bitsdone = 0;
 			int bitsleft = 23;
@@ -248,7 +244,7 @@ namespace Melon.Pdf.Imaging
 			ms = new MemoryStream();
 
 			// if possible, we read the first 24 bits of data
-			size--; bytesread++; bitsread = buf[p++];
+			size--; bytesread++; int bitsread = buf[p++];
 			if (size > 0) 
 			{
 				size--; bytesread++; bitsread += (buf[p++] << 8);
@@ -290,7 +286,7 @@ namespace Melon.Pdf.Imaging
 
 				while (bitsleft < 16) 
 				{
-					byte kk = (byte)(bitstowrite >> 16);
+					var kk = (byte)(bitstowrite >> 16);
 					ms.WriteByte(kk);
 					byteswritten++;
 					bitstowrite = (bitstowrite & 0xFFFF) << 8;
@@ -317,7 +313,19 @@ namespace Melon.Pdf.Imaging
 
 		}
 
-		
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				ms.Close();
+			}
+		}
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
 
 	}
 }

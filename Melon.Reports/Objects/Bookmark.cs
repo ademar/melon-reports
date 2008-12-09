@@ -1,5 +1,3 @@
-using System;
-
 namespace Melon.Reports.Objects
 {
 	/// <summary>
@@ -7,28 +5,15 @@ namespace Melon.Reports.Objects
 	/// </summary>
 	public class Bookmark : BasicElement
 	{
-		string varName ;
-		Bookmark parent = null ;
 		public Bookmark(string varName)
 		{
-			this.varName = varName ;
-		}
-		public Bookmark(string varName,Bookmark parent)
-		{
-			this.varName = varName ;
-			this.parent = parent;
+			VarName = varName ;
 		}
 
-		public string VarName 
+		public Bookmark() : this("")
 		{
-			get 
-			{
-				return varName ;
-			}
-			set 
-			{
-				varName = value ;
-			}
 		}
+        
+		public string VarName { get; set; }
 	}
 }

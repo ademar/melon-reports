@@ -1,5 +1,3 @@
-using System;
-
 namespace Melon.Reports.Objects
 {
 	/// <summary>
@@ -9,9 +7,5 @@ namespace Melon.Reports.Objects
 	{
 		public int x,y,height,width ;
 		public Color fillcolor,bordercolor ;
-		public Rectangle()
-		{
-			
-		}
 	}
 }

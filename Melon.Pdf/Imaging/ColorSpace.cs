@@ -60,14 +60,15 @@ namespace Melon.Pdf.Imaging
 		{
 			if (m_devices.Count == 1 &&  m_ctables.Count==0) 
 				return DeviceName((ColorDevice)m_devices[0]);
-			else if (m_devices.Count>1)
+			
+			if (m_devices.Count>1)
 			{
-				StringBuilder s = new StringBuilder("[ ");
-				for(int i=0 ; i<m_devices.Count; i++)
+				var s = new StringBuilder("[ ");
+				for(var i=0 ; i<m_devices.Count; i++)
 				{
 					s.Append(DeviceName((ColorDevice)m_devices[i]) + " ");
 				}
-				for(int i=0 ; i<m_ctables.Count;i++)
+				for(var i=0 ; i<m_ctables.Count;i++)
 				{
 					s.Append(((ColorTable)m_ctables[i]).GetRepresentation() + " ");
 				}
@@ -75,7 +76,7 @@ namespace Melon.Pdf.Imaging
 				return s.ToString();
 			}
 
-			return "";
+			return string.Empty;
 		}
 	}
 }

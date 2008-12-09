@@ -1,5 +1,6 @@
 // created on 3/13/2002 at 5:34 PM
 using System.Collections;
+using System.Globalization;
 
 namespace Melon.Pdf.Objects
 {
@@ -12,7 +13,7 @@ namespace Melon.Pdf.Objects
 		}
 
 		public void addFont(PDFFont font){
-			fonts.Add(font.getName,font);
+			fonts.Add(font.FontName,font);
 		}
 
 		public void addImage(PDFImage image){
@@ -21,14 +22,14 @@ namespace Melon.Pdf.Objects
 		
 		public override string ToPDF(){
 
-			string s = string.Format("{0} {1} obj\n<<\n", number, generation);
+			string s = string.Format(CultureInfo.InvariantCulture,"{0} {1} obj\n<<\n", Number, Generation);
 
 			//font resources
 			if(fonts.Count>0){
 				s = s + "/Font << ";
-				IDictionaryEnumerator it = fonts.GetEnumerator();
+				var it = fonts.GetEnumerator();
 				while (it.MoveNext()){
-					s = s + "/" + it.Key + " " + ((PDFFont)it.Value).getReference + " " ;
+					s = string.Format("{0}/{1} {2} ", s, it.Key, ((PDFFont)it.Value).Reference) ;
 				}
 				s = s + " >>\n";
 			}
@@ -37,9 +38,9 @@ namespace Melon.Pdf.Objects
 			s = s + "/ProcSet [ /PDF /ImageC /Text ]\n";
 			if(images.Count>0){
 				s = s + "/XObject << ";
-				IDictionaryEnumerator it = images.GetEnumerator();
+				var it = images.GetEnumerator();
 				while(it.MoveNext()){
-					s = s + "/" + it.Key + " " + ((PDFImage)it.Value).getReference + " "  ;
+					s = string.Format("{0}/{1} {2} ", s, it.Key, ((PDFImage)it.Value).Reference)  ;
 				}
 				s = s + " >>\n";
 			}

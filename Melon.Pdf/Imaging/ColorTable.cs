@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Text;
 
 namespace Melon.Pdf.Imaging
@@ -8,7 +9,7 @@ namespace Melon.Pdf.Imaging
 		readonly int m_size ;
 		readonly byte[] m_table;
 
-		int index = 0 ;
+		int index;
 
 		public ColorTable(int size)
 		{
@@ -23,7 +24,7 @@ namespace Melon.Pdf.Imaging
 
 		public string GetRepresentation()
 		{
-			StringBuilder s = new StringBuilder((m_size-1).ToString());
+			var s = new StringBuilder((m_size-1).ToString(CultureInfo.InvariantCulture));
 			
 			s.Append(" <");
 

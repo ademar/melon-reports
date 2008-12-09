@@ -1,4 +1,4 @@
-	using System;
+using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.Collections;
@@ -28,55 +28,50 @@ namespace Melon.Reports
 
 		public void BuildExpressions(Report report)
 		{
-			CSharpCodeProvider csharp = new CSharpCodeProvider();
+			var csharp = new CSharpCodeProvider();
 
-			/**/
-			ICodeGenerator codeGenerator = csharp.CreateGenerator();
+			var w = new StreamWriter(new FileStream("compiled.cs", FileMode.Create));
 
-			StreamWriter w = new StreamWriter(new FileStream("compiled.cs", FileMode.Create));
+			var c = new CodeCommentStatement("This file is dynamically generated");
+			csharp.GenerateCodeFromStatement(c, w, null);
 
-			CodeCommentStatement c = new CodeCommentStatement("This file is dynamically generated");
-			codeGenerator.GenerateCodeFromStatement(c, w, null);
-
-			CodeNamespace namespc = new CodeNamespace("Melon.Reports");
+			var namespc = new CodeNamespace("Melon.Reports");
 			namespc.Imports.Add(new CodeNamespaceImport("System"));
 			namespc.Imports.Add(new CodeNamespaceImport("Melon.Reports.Objects"));
 
-			//namespc.Imports.Add(new CodeNamespaceImport("System.Data.SqlTypes"));
-
-			CodeTypeDeclaration ExpressionCalculatorClass = new CodeTypeDeclaration("ExpressionCalculator");
-			ExpressionCalculatorClass.IsClass = true;
-			ExpressionCalculatorClass.TypeAttributes = TypeAttributes.Public;
+			
+			var ExpressionCalculatorClass = new CodeTypeDeclaration("ExpressionCalculator")
+			                                	{
+			                                		IsClass = true,
+			                                		TypeAttributes = TypeAttributes.Public
+			                                	};
 
 			namespc.Types.Add(ExpressionCalculatorClass);
 			//set the base class
 			ExpressionCalculatorClass.BaseTypes.Add("Melon.Reports.AbstractCalculator");
 
 			//build constructor
-			CodeConstructor theConstructor = new CodeConstructor();
-			theConstructor.Attributes = MemberAttributes.Public;
+			var theConstructor = new CodeConstructor {Attributes = MemberAttributes.Public};
 			theConstructor.Parameters.Add(new CodeParameterDeclarationExpression("Report", "report"));
 			theConstructor.BaseConstructorArgs.Add(new CodeVariableReferenceExpression("report"));
 			ExpressionCalculatorClass.Members.Add(theConstructor);
 
 			//add the fields
-			IDictionaryEnumerator it = FieldCollection.GetEnumerator();
+			var it = FieldCollection.GetEnumerator();
 
 			while (it.MoveNext())
 			{
-				CodeMemberField f = new CodeMemberField(((Field)it.Value).Type, ((Field)it.Value).Name);
-				f.Attributes = MemberAttributes.Public;
+				var f = new CodeMemberField(((Field)it.Value).Type, ((Field)it.Value).Name) {Attributes = MemberAttributes.Public};
 				ExpressionCalculatorClass.Members.Add(f);
 			}
 
 			//add especial variables
 			/*	GlobalRecordCount	*/
-			CodeMemberField GlobalRecordCountField = new CodeMemberField(typeof(int), "GlobalRecordCount");
-			GlobalRecordCountField.Attributes = MemberAttributes.Public;
+			var GlobalRecordCountField = new CodeMemberField(typeof(int), "GlobalRecordCount")
+			                             	{Attributes = MemberAttributes.Public};
 			ExpressionCalculatorClass.Members.Add(GlobalRecordCountField);
 			/*	PageNumber	*/
-			CodeMemberField PageNumberField = new CodeMemberField(typeof(int), "PageNumber");
-			PageNumberField.Attributes = MemberAttributes.Public;
+			var PageNumberField = new CodeMemberField(typeof(int), "PageNumber") {Attributes = MemberAttributes.Public};
 			ExpressionCalculatorClass.Members.Add(PageNumberField);
 
 			/*
@@ -85,19 +80,19 @@ namespace Melon.Reports
 			 * }
 			 */
 
-			StringBuilder dynaCode = new StringBuilder("Object o = null; \n		switch(i){\n");
+			var dynaCode = new StringBuilder("Object o = null; \n		switch(i){\n");
 
 			it = VariableCollection.GetEnumerator();
 
 			while (it.MoveNext())
 			{
-				Variable v = (Variable)it.Value;
+				var v = (Variable)it.Value;
 				dynaCode.Append("		case " + v.GetHashCode() + ":\n" +
 					"		o = (" + v.Type + ")" + v.Expression.Trim() + ";\n" +
 					"		break;\n");
 
 				// the property
-				CodeMemberProperty p = new CodeMemberProperty();
+				var p = new CodeMemberProperty();
 				p.GetStatements.Add(new CodeSnippetStatement("return (" + v.Type + ")EvaluateVariable((Variable)variables[\"" + v.Name + "\"]);"));
 				//p.SetStatements.Add(new CodeSnippetStatement("_" + ((Variable)it.Value).Name+ " = value ;"));
 				p.Type = new CodeTypeReference(v.Type);
@@ -107,7 +102,7 @@ namespace Melon.Reports
 			}
 			dynaCode.Append("		}\nreturn o");
 
-			CodeMemberMethod EvaluateVariableExpressionMethod = new CodeMemberMethod();
+			var EvaluateVariableExpressionMethod = new CodeMemberMethod();
 			EvaluateVariableExpressionMethod.Parameters.Add(new CodeParameterDeclarationExpression(typeof(int), "i"));
 			EvaluateVariableExpressionMethod.Statements.Add(new CodeExpressionStatement(new CodeSnippetExpression(dynaCode.ToString())));
 			EvaluateVariableExpressionMethod.ReturnType = new CodeTypeReference(typeof(object));
@@ -140,7 +135,7 @@ namespace Melon.Reports
 
 			while (it.MoveNext())
 			{
-				Expression ex = (Expression)it.Value;
+				var ex = (Expression)it.Value;
 				dynaCode.Append("		case " + ex.GetHashCode() + ":\n" +
 								"			o = (" + ((Expression)it.Value).Type + ")" + ((Expression)it.Value).Content + ";\n" +
 								"			break;\n");
@@ -148,7 +143,7 @@ namespace Melon.Reports
 
 			dynaCode.Append("		}\n		return o");
 
-			CodeMemberMethod EvaluateExpressionMethod = new CodeMemberMethod();
+			var EvaluateExpressionMethod = new CodeMemberMethod();
 			EvaluateExpressionMethod.Parameters.Add(new CodeParameterDeclarationExpression(typeof(int), "i"));
 			EvaluateExpressionMethod.Statements.Add(new CodeExpressionStatement(new CodeSnippetExpression(dynaCode.ToString())));
 			EvaluateExpressionMethod.ReturnType = new CodeTypeReference(typeof(object));
@@ -159,44 +154,44 @@ namespace Melon.Reports
 			EvaluateExpressionMethod.Attributes = MemberAttributes.Public;
 			EvaluateExpressionMethod.Name = "EvaluateExpression";
 
-			CodeCompileUnit cu = new CodeCompileUnit();
+			var cu = new CodeCompileUnit();
 			cu.Namespaces.Add(namespc);
 
 			//code generation
-			
-			codeGenerator.GenerateCodeFromNamespace(namespc, w, null);
+
+			csharp.GenerateCodeFromNamespace(namespc, w, null);
 			w.Close();
 
-			string thisAsembly = Assembly.GetAssembly(GetType()).Location;
+			var thisAsembly = Assembly.GetAssembly(GetType()).Location;
 			
 			//compilation
-			CompilerParameters compparams = new CompilerParameters(new string[] { "mscorlib.dll", thisAsembly });
-			compparams.GenerateInMemory = true;
-			
-			string ErrorMsg = "";
+			var compparams = new CompilerParameters(new[] { "mscorlib.dll", thisAsembly }) {GenerateInMemory = true};
 
-			ICodeCompiler cscompiler = csharp.CreateCompiler();
-			CompilerResults compresult = cscompiler.CompileAssemblyFromDom(compparams, cu);
+			var ErrorMsg = "";
+
+			var cscompiler = csharp.CreateCompiler();
+			var compresult = cscompiler.CompileAssemblyFromDom(compparams, cu);
 
 
 
 			if (compresult == null || compresult.Errors.Count > 0)
 			{
-				if (compresult.Errors.Count > 0)
-				{
-					foreach (CompilerError CompErr in compresult.Errors)
+				if (compresult != null)
+					if (compresult.Errors.Count > 0)
 					{
-						ErrorMsg = ErrorMsg +
-							"Line number " + CompErr.Line +
-							", Error Number: " + CompErr.ErrorNumber +
-							", '" + CompErr.ErrorText + ";" +
-							Environment.NewLine + Environment.NewLine;
+						foreach (CompilerError CompErr in compresult.Errors)
+						{
+							ErrorMsg = ErrorMsg +
+							           "Line number " + CompErr.Line +
+							           ", Error Number: " + CompErr.ErrorNumber +
+							           ", '" + CompErr.ErrorText + ";" +
+							           Environment.NewLine + Environment.NewLine;
+						}
 					}
-				}
 
-					throw new Exception(ErrorMsg);
+				throw new Exception(ErrorMsg);
 			}
-			
+
 			object o = compresult.CompiledAssembly.CreateInstance("Melon.Reports.ExpressionCalculator", 
 			true, BindingFlags.CreateInstance, null, new object[] { report }, null, null);
 

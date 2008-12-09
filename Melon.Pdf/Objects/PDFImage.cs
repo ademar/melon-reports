@@ -43,9 +43,9 @@ namespace Melon.Pdf.Objects
 
 			StringBuilder sb = new StringBuilder();
 
-			sb.Append(number);
+			sb.Append(Number);
 			sb.Append(" ");
-			sb.Append(generation);
+			sb.Append(Generation);
 			sb.Append(" obj\n<< /Type /XObject\n/Subtype /Image\n/Name /Im");
 			sb.Append(imgnumber);
 

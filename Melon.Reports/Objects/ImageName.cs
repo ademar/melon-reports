@@ -1,5 +1,3 @@
-using System;
-
 namespace Melon.Reports.Objects
 {
 	/// <summary>
@@ -7,24 +5,16 @@ namespace Melon.Reports.Objects
 	/// </summary>
 	public class ImageName
 	{
-		string name = "" ;
-		public ImageName(){
+		public ImageName()
+		{
+			Name = "";
 		}
 
 		public ImageName(string name)
 		{
-			this.name =  name ;
+			Name =  name ;
 		}
-		public string Name 
-		{
-			get 
-			{
-				return this.name ;
-			}
-			set 
-			{
-				this.name = value ;
-			}
-		}
+
+		public string Name { get; set; }
 	}
 }

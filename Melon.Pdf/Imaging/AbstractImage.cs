@@ -4,35 +4,29 @@ using System.IO;
 using Melon.Pdf.Objects;
 
 namespace Melon.Pdf.Imaging{
+
 	public abstract class AbstractImage{
 		
-		protected int m_width = 0;
-		protected int m_height = 0;
-		protected string m_href = null;
-		protected Uri m_uri = null ;
-		
-		protected byte[] m_bitmaps = null;
-		
-		protected int m_bitmapsSize = 0;
-		
-		protected bool m_isTransparent = false;
-		
-		protected int m_transparentColor = 0;
-		
-		protected int m_bitsPerPixel = 0 ;
+		protected int m_width;
+		protected int m_height;
+		protected string m_href;
+		protected Uri m_uri;
+		protected byte[] m_bitmaps;
+		protected int m_bitmapsSize;
+		protected bool m_isTransparent;
+		protected int m_transparentColor;
+		protected int m_bitsPerPixel;
+        protected bool m_adobeFlag;
+		protected ColorSpace m_colorSpace;
+		protected Filter m_filter;
 
-		protected bool m_adobeFlag = false ;
-		
-		protected ColorSpace m_colorSpace = null ;
-		protected Filter m_filter = null ;
-		
-				
-		public AbstractImage(string href){
+
+		protected AbstractImage(string href){
 			m_href = href;
 			m_uri =  new Uri(href);
 		}
 
-		public AbstractImage(Uri the_uri)
+		protected AbstractImage(Uri the_uri)
 		{
 			m_uri = the_uri;
 		}
@@ -44,6 +38,7 @@ namespace Melon.Pdf.Imaging{
 				return m_href;
 			}
 		}
+
 		public Uri Uri 
 		{
 			get
@@ -115,8 +110,6 @@ namespace Melon.Pdf.Imaging{
 
 		public static AbstractImage Make(string href)
 		{
-			//TODO:Consider using a generic URI
-			// -- don't like this way
 			FileStream ImageHolder;
 			try
 			{
@@ -126,7 +119,8 @@ namespace Melon.Pdf.Imaging{
 			{
 				throw new ImageFormatException("Invalid image URI: " + href);
 			}
-			byte[] header = new byte[2] ;
+
+			var header = new byte[2] ;
 			ImageHolder.Read(header,0,2);
 			ImageHolder.Close();
 			if (header[0]==0x47/*G*/ && header[1]==0x49/*I*/)
@@ -134,11 +128,13 @@ namespace Melon.Pdf.Imaging{
 				return new GifImage(href);
 
 			}
-			else if (header[0]==0xFF && header[1]==JpgImage.M_SOI)
+			
+			if (header[0]==0xFF && header[1]==JpgImage.M_SOI)
 			{
 				return new JpgImage(href);
 			}
-			else throw new ImageFormatException();
+			
+			throw new ImageFormatException();
 		}
 
 		protected static int toShort(int firstByte,int secondByte)

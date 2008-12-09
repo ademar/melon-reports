@@ -1,5 +1,6 @@
 // created on 3/13/2002 at 5:33 PM
 using System.Collections;
+using System.Globalization;
 
 namespace Melon.Pdf.Objects
 {
@@ -7,33 +8,31 @@ namespace Melon.Pdf.Objects
 	public class PDFPages : PDFObject{
 		
 		protected ArrayList kids ;
-		protected int  count  = 0 ;
-		
-		public PDFPages(int number):base(number){
+
+		public PDFPages(int number):base(number)
+		{
+			Count = 0;
 			kids = new ArrayList();
 		}
-		
+
 		public void addPage(PDFPage page){
-			kids.Add(page.getReference);
-			count++;
+			kids.Add(page.Reference);
+			Count++;
 			page.setParent(this);
 			
 		}
 
-		public int GetCount {
-			get{
-				return count ;
-			}
-		}
+		public int Count { get; protected set; }
+
 		public override string ToPDF(){
 
-			string s = string.Format("{0} {1} obj\n<< /Type /Pages\n/Count {2}\n/Kids [", number, generation, count) ;
+			var s = string.Format(CultureInfo.InvariantCulture, "{0} {1} obj\n<< /Type /Pages\n/Count {2}\n/Kids [", Number, Generation, Count);
 
-			IEnumerator it = kids.GetEnumerator();
+			var it = kids.GetEnumerator();
 
 			while(it.MoveNext())
 			{
-				s = s + " " + it.Current  ;
+				s = string.Format("{0} {1}", s, it.Current)  ;
 			}
 			s = s + " ] >>\nendobj\n";
 

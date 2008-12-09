@@ -7,17 +7,17 @@ using MySql.Data.MySqlClient;
 using NUnit.Framework;
 
 namespace Melon.Tests
-{	
+{
 	[TestFixture]
 	public class Reporting
 	{
 		private Report report;
 		private Document document;
-				
+
 		[Test]
-		public void	Load()
+		public void Load()
 		{
-			ReportReader reader = new ReportReader();
+			var reader = new ReportReader();
 
 			report = reader.Load("WorldPopulation.xml");
 		}
@@ -27,9 +27,8 @@ namespace Melon.Tests
 		{
 			IDbConnection cn = new MySqlConnection("Server=localhost;Database=world;User ID=user;Password=password;");
 
-			Generator generator = new Generator(report);
-			
-			generator.Connection = cn;
+			var generator = new Generator(report) {Connection = cn};
+
 			generator.FillReport();
 
 			document = generator.Doc;
@@ -39,13 +38,13 @@ namespace Melon.Tests
 		[Test]
 		public void Print()
 		{
-			PrintManager printer = new PrintManager();
+			var printer = new PrintManager();
 
-			FileStream f = new FileStream("report.pdf", FileMode.Create, FileAccess.Write);
+            var f = new FileStream("report.pdf", FileMode.Create, FileAccess.Write);
 
-			PDFDriver driver = new PDFDriver(f);
+            var driver = new PDFDriver();
 
-			printer.Print(document, driver);
+			printer.Print(document, driver,f);
 
 			f.Close();
 		}

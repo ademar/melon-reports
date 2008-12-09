@@ -6,18 +6,17 @@ namespace Melon.Reports
 {
 	public class Generator
 	{
-		private readonly Report report = null ;
-		private Document document  = null ;
-		private IDbConnection conn = null ;
-		int h = 0 ;
+		private readonly Report report;
+		int h;
 		private readonly ExpressionBuilder expressionBuilder;
 		private readonly Calculator calculator;
 
 		public Generator(Report report)
 		{
+			Connection = null;
 			this.report = report ;
 
-			expressionBuilder = new ExpressionBuilder(report.FieldCollection,report.VariableCollection,report.ExpressionCollection);
+			expressionBuilder = new ExpressionBuilder(report.Fields,report.VariableCollection,report.ExpressionCollection);
 
 			calculator = new Calculator(expressionBuilder);
 		}
@@ -26,29 +25,27 @@ namespace Melon.Reports
 		{
 			expressionBuilder.BuildExpressions(report);
 
-			document =  new Document();
-			document.Fonts =  report.Fonts ;
+			Doc =  new Document {Fonts = report.Fonts, Images = new Image[report.ImageCollection.Count]};
+
+			report.ImageCollection.Values.CopyTo(Doc.Images,0);
 			
-			document.Images = new Image[report.ImageCollection.Count];
-			report.ImageCollection.Values.CopyTo(document.Images,0);
-			
-			IDbCommand com = conn.CreateCommand();
+			var com = Connection.CreateCommand();
 			com.CommandText = report.QueryString ;
 						
-			conn.Open();
+			Connection.Open();
 			
-			IDataReader dataReader = com.ExecuteReader();
+			var dataReader = com.ExecuteReader();
 			
 			h = report.Height - report.TopMargin ;
 
-			// do the walk
-			
-			Page page = document.AddPage(); 
+			var page = Doc.AddPage(); 
 			page.Height = report.Height ;
 			page.Width = report.Width ;
+
 			// DOUBT : cuando se evaluan el header y el footer ;
 			// dos opciones : antes de evaluar la pagina o despues
 			// TODO : tengo que resolver el problema de las expresiones en el primer header
+
 			page.PutBands(report.PageHeader, ref h);
 
 			int RECORD_COUNT = 0 ;
@@ -57,7 +54,7 @@ namespace Melon.Reports
 			expressionBuilder.SetField("PageNumber", PAGE_NUMBER);
 
 			//a reversed copy of the group array
-			ArrayList reversedGroups = (ArrayList)report.Groups.Clone();
+			var reversedGroups = (ArrayList)report.Groups.Clone();
 			reversedGroups.Reverse();
 
 			while(dataReader.Read())
@@ -112,7 +109,7 @@ namespace Melon.Reports
 					if (h < (report.BottonMargin + report.PageFooter.Height))
 					{
 						page.PutBands(report.PageFooter,ref h);	
-						page = document.AddPage(); 
+						page = Doc.AddPage(); 
 						page.Height = report.Height ;
 						page.Width = report.Width ;
 						h = report.Height - report.TopMargin ; //reset h
@@ -132,24 +129,8 @@ namespace Melon.Reports
 		
 		}
 
-		public Document Doc 
-		{
-			get
-			{
-				return document ;
-			}
-		}
+		public Document Doc { get; private set; }
 
-		public IDbConnection Connection 
-		{
-			get 
-			{
-				return conn;
-			}
-			set 
-			{
-				conn =  value;
-			}
-		}
+		public IDbConnection Connection { get; set; }
 	}
 }
