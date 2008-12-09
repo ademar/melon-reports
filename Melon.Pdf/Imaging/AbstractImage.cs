@@ -34,16 +34,6 @@ namespace Melon.Pdf.Imaging
 
 		protected abstract void LoadImage();
 
-		public string GetURL
-		{
-			get { return m_href; }
-		}
-
-		public Uri Uri
-		{
-			get { return m_uri; }
-		}
-
 		public int Width
 		{
 			get

@@ -4,9 +4,20 @@ namespace Melon.Pdf.Objects
 	{
 		public bool EarlyChange { get; set; }
 
-		public override string Name()
+		public override string Name
 		{
-			return "/LZWDecode";
+			get
+			{
+				return "/LZWDecode";
+			}
+		}
+
+		public override string DecodeParameters
+		{
+			get
+			{
+				return EarlyChange ? "<< /EarlyChange 1 >>" : "<< /EarlyChange 0 >> ";
+			}
 		}
 
 		public override byte[] Encode(byte[] data)
@@ -14,14 +25,6 @@ namespace Melon.Pdf.Objects
 			return data;
 		}
 
-		public override string GetDecodeParameters()
-		{
-			if (EarlyChange)
-			{
-				return "<< /EarlyChange 1 >>";
-			}
-
-			return "<< /EarlyChange 0 >> ";
-		}
+		
 	}
 }

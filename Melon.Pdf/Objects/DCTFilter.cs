@@ -2,9 +2,14 @@ namespace Melon.Pdf.Objects
 {
 	public class DCTFilter : Filter
 	{
-		public override string Name()
+		public override string Name
 		{
-			return "/DCTDecode";
+			get { return "/DCTDecode"; }
+		}
+
+		public override string DecodeParameters
+		{
+            get { return null; }
 		}
 
 		public override byte[] Encode(byte[] data)
@@ -12,9 +17,6 @@ namespace Melon.Pdf.Objects
 			return data;
 		}
 
-		public override string GetDecodeParameters()
-		{
-			return null;
-		}
+		
 	}
 }

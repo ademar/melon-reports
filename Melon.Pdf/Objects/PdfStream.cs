@@ -116,8 +116,8 @@ namespace Melon.Pdf.Objects
 					streamdata.SetLength(0); //reset ??
 					streamdata.Write(tmp, 0, tmp.Length);
 					streamdata.Flush();
-					names.Add(f.Name()); //no decode parms so far
-					if (f.GetDecodeParameters() != null) parms.Add(f.GetDecodeParameters());
+					names.Add(f.Name); //no decode parms so far
+					if (f.DecodeParameters != null) parms.Add(f.DecodeParameters);
 				}
 				//build the filters entry
 				string filternames = "/Filter [ ";

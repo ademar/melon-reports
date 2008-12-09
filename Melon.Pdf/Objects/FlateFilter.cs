@@ -7,16 +7,27 @@ namespace Melon.Pdf.Objects
 {
 	public class FlateFilter : Filter
 	{
-		public override string Name()
+		public override string Name
 		{
-			return "/FlateDecode";
+			get
+			{
+				return "/FlateDecode";
+			}
+		}
+
+		public override string DecodeParameters
+		{
+			get
+			{
+				return null;
+			}
 		}
 
 		public override byte[] Encode(byte[] data)
 		{
-			MemoryStream o = new MemoryStream();
+			var o = new MemoryStream();
 
-			DeflaterOutputStream compressed = new DeflaterOutputStream(o, new Deflater(1));
+			var compressed = new DeflaterOutputStream(o, new Deflater(1));
 			compressed.Write(data, 0, data.Length);
 			compressed.Flush();
 			compressed.Close();
@@ -24,9 +35,6 @@ namespace Melon.Pdf.Objects
 			return o.ToArray();
 		}
 
-		public override string GetDecodeParameters()
-		{
-			return null;
-		}
+		
 	}
 }

@@ -15,8 +15,9 @@ namespace Melon.Pdf.Objects
 	/// </summary>
 	public abstract class Filter
 	{
-		public abstract string Name();
+		public abstract string Name { get; }
+		public abstract string DecodeParameters { get; }
 		public abstract byte[] Encode(byte[] data);
-		public abstract string GetDecodeParameters();
+		
 	}
 }
