@@ -11,9 +11,9 @@ namespace Melon.Tests
 		[Test]
 		public void Works()
 		{
-			var pdf = new PDFDocument();
-            
-			pdf.MakeFont("F1",PDFFont.TYPE1,"Helvetica"); 
+			var pdf = new PdfDocument();
+
+			pdf.MakeFont("F1", PdfFontTypes.TYPE1, "Helvetica"); 
 
 			var img = AbstractImage.Make(@"C:\Temp\dotnet.gif");
             pdf.AddImage(img);

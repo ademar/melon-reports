@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{958E134C-DBF6-485F-B3B0-E83849B09B5D}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -55,17 +55,18 @@
     <Compile Include="Objects\Filter.cs" />
     <Compile Include="Objects\FlateFilter.cs" />
     <Compile Include="Objects\LZWFilter.cs" />
-    <Compile Include="Objects\PDFDocument.cs" />
-    <Compile Include="Objects\PDFFont.cs" />
-    <Compile Include="Objects\PDFImage.cs" />
-    <Compile Include="Objects\PDFInfo.cs" />
-    <Compile Include="Objects\PDFObject.cs" />
-    <Compile Include="Objects\PDFOutline.cs" />
-    <Compile Include="Objects\PDFPage.cs" />
-    <Compile Include="Objects\PDFPages.cs" />
-    <Compile Include="Objects\PDFResources.cs" />
-    <Compile Include="Objects\PDFRoot.cs" />
-    <Compile Include="Objects\PDFStream.cs" />
+    <Compile Include="Objects\PdfDocument.cs" />
+    <Compile Include="Objects\PdfFont.cs" />
+    <Compile Include="Objects\PdfFontTypes.cs" />
+    <Compile Include="Objects\PdfImage.cs" />
+    <Compile Include="Objects\PdfInfo.cs" />
+    <Compile Include="Objects\PdfObject.cs" />
+    <Compile Include="Objects\PdfOutline.cs" />
+    <Compile Include="Objects\PdfPage.cs" />
+    <Compile Include="Objects\PdfPages.cs" />
+    <Compile Include="Objects\PdfResources.cs" />
+    <Compile Include="Objects\PdfRoot.cs" />
+    <Compile Include="Objects\PdfStream.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

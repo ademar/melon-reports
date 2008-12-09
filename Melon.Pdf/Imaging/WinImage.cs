@@ -1,9 +1,7 @@
 // created on 3/21/2002 at 12:33 PM
 namespace Melon.Pdf.Imaging
 {
-	
-using System;
-using System.Drawing;
+	using System.Drawing;
 	
 	public class WinImage : AbstractImage {
 		
@@ -13,16 +11,8 @@ using System.Drawing;
 		
 		protected override void LoadImage()
 		{
-			Bitmap ImageHolder;	
-			try
-			{
-				ImageHolder = new Bitmap(m_href);
-			}
-			catch(ArgumentException )
-			{
-				throw new Exception("Invalid image URI: " + m_href );
-			}
-
+			var ImageHolder = new Bitmap(m_href);
+			
 			m_height = ImageHolder.Height ;
 			m_width = ImageHolder.Width ;
 			
@@ -35,7 +25,8 @@ using System.Drawing;
 			m_bitmaps = new byte[m_bitmapsSize];
 			
 			for(int i=0;i<m_height;i++){
-				//remenber we swaped indexes
+
+				//indexes were swapped
 				for(int j=0;j<m_width;j++){
 					Color pixelColor = ImageHolder.GetPixel(j,i);
 					m_bitmaps[3 * (i * m_width + j) + 0]= (byte)(pixelColor.R & 0xFF);

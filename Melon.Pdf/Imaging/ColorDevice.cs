@@ -3,6 +3,7 @@ namespace Melon.Pdf.Imaging
 {
 
 	public enum ColorDevice{
+		DeviceNone = 0,
 		DeviceUnknown = - 1,
 		DeviceGray = 1,
 		DeviceRGB = 3 ,

@@ -7,18 +7,17 @@ namespace Melon.Printer
 {
 	public class PDFDriver : AbstractDriver
 	{
-		private PDFPage currentPage;
+		private PdfPage currentPage;
 		
 		private string defaultFont;
-
-		
+        
 		public override void Print(Document document, Stream printStream)
 		{
-			var pdf = new PDFDocument();
+			var pdf = new PdfDocument();
 
 			foreach (Font font in document.Fonts)
 			{
-				pdf.MakeFont(font.Name, PDFFont.TYPE1, font.FontName);
+				pdf.MakeFont(font.Name, PdfFontTypes.TYPE1, font.FontName);
 				if (font.IsDefault) defaultFont = font.Name;
 			}
 
@@ -42,7 +41,7 @@ namespace Melon.Printer
 		}
 
 		
-		public void PrintPage(Page page, PDFDocument pdf)
+		public void PrintPage(Page page, PdfDocument pdf)
 		{
 			var currentPDFStream = pdf.MakeStream();
             
@@ -55,7 +54,7 @@ namespace Melon.Printer
 			
 		}
 		
-		public void PrintElement(BasicElement element, PDFDocument pdf, PDFStream pdfStream)
+		public void PrintElement(BasicElement element, PdfDocument pdf, PdfStream pdfStream)
 		{
 			var type = element.GetType();
 
@@ -83,7 +82,7 @@ namespace Melon.Printer
 			}
 		}
 
-		public void PrintBookmark(Bookmark b, PDFDocument pdf)
+		public void PrintBookmark(Bookmark b, PdfDocument pdf)
 		{
 			pdf.MakeOutline(pdf.OutlineRoot,b.VarName,currentPage);
 		}
@@ -92,10 +91,10 @@ namespace Melon.Printer
 
 	public class PDFStreamAdapter
 	{
-		private readonly PDFStream pdfStream;
+		private readonly PdfStream pdfStream;
 		private readonly string defaultFont;
 
-		public PDFStreamAdapter(PDFStream pdfStream, string defaultFont)
+		public PDFStreamAdapter(PdfStream pdfStream, string defaultFont)
 		{
 			this.pdfStream = pdfStream;
 			this.defaultFont = defaultFont;
