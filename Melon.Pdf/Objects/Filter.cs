@@ -3,7 +3,7 @@ namespace Melon.Pdf.Objects
 {
 
 	///<summary>
-	/// Represents a Filter used to decode/encode a stream.
+	/// Represents a Filter used to decode/Encode a stream.
 	/// Filters suported by PDF are (as of version 1.4)
 	/// /ASCIIHexDecodeFilter
 	/// /ASCII85DecodeFilter
@@ -18,7 +18,7 @@ namespace Melon.Pdf.Objects
 		
 			
 		public abstract string Name();
-		public abstract byte[] encode(byte[] data);
+		public abstract byte[] Encode(byte[] data);
 		public abstract string GetDecodeParameters();
 		
 	}

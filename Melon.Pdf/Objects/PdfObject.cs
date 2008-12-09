@@ -6,11 +6,11 @@ using System.Text;
 namespace Melon.Pdf.Objects
 {
 	
-	public abstract class PDFObject{
+	public abstract class PdfObject{
 		
 		protected int Generation;
 
-		protected PDFObject(int number){
+		protected PdfObject(int number){
 			Number = number;
 		}
 
@@ -25,11 +25,11 @@ namespace Melon.Pdf.Objects
 		}
 		
 		
-		public abstract string ToPDF();
+		public abstract string ToPdf();
 		
-		public virtual int output(Stream stream){
+		public virtual int Output(Stream stream){
 
-			var buffer = (new ASCIIEncoding()).GetBytes(ToPDF());
+			var buffer = (new ASCIIEncoding()).GetBytes(ToPdf());
 			stream.Write(buffer,0,buffer.Length);
 			stream.Flush();
 			return buffer.Length;

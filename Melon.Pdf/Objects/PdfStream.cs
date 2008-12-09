@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Melon.Pdf.Objects
 {
-	public class PDFStream : PDFObject, IDisposable 
+	public class PdfStream : PdfObject, IDisposable 
 	{
 		
 		protected MemoryStream streamdata = new MemoryStream();
@@ -16,7 +16,7 @@ namespace Melon.Pdf.Objects
 
 		public static readonly int DefaultEncoding = 1252;
 		
-		public PDFStream(int number):base(number){
+		public PdfStream(int number):base(number){
 			filters = new ArrayList();
 		}
 		
@@ -50,7 +50,7 @@ namespace Melon.Pdf.Objects
 			}
 		}
 		
-		public override string ToPDF(){
+		public override string ToPdf(){
 			
 			/*string s = this.number + " " + this.Generation + " obj\n"
 						+ "<< /Length " + streamdata.Length + " >>\nstream\n"
@@ -59,7 +59,7 @@ namespace Melon.Pdf.Objects
 			return null;
 		}
 		
-		public override int output(Stream stream){
+		public override int Output(Stream stream){
 			int marker;
 			
 			string filterEntry = ApplyFilters();
@@ -103,7 +103,7 @@ namespace Melon.Pdf.Objects
 				IEnumerator it = filters.GetEnumerator();
 				while(it.MoveNext()){
 					Filter f = (Filter)it.Current ;
-					byte[] tmp = f.encode(streamdata.ToArray());
+					byte[] tmp = f.Encode(streamdata.ToArray());
 					streamdata.SetLength(0);//reset ??
 					streamdata.Write(tmp,0,tmp.Length);
 					streamdata.Flush();

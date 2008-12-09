@@ -12,7 +12,7 @@ namespace Melon.Pdf.Objects
 				return "/FlateDecode";
 		}
 		
-		public override byte[] encode(byte[] data){ 
+		public override byte[] Encode(byte[] data){ 
 			
 			MemoryStream o =  new MemoryStream(); 
 			

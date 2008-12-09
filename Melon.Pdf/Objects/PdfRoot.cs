@@ -3,18 +3,18 @@ using System.Globalization;
 
 namespace Melon.Pdf.Objects
 {
-	public class PDFRoot : PDFObject{
+	public class PdfRoot : PdfObject{
 		
-		protected PDFPages pages;
-		protected PDFOutline outlines ;
+		protected PdfPages pages;
+		protected PdfOutline outlines ;
 		
-		public PDFRoot(int number):base(number){
+		public PdfRoot(int number):base(number){
 		}
-		public PDFRoot(int number,PDFPages pages):base(number){
+		public PdfRoot(int number,PdfPages pages):base(number){
 			this.pages = pages;
 		}
 		
-		public override string ToPDF(){
+		public override string ToPdf(){
 
 			var s = string.Format(CultureInfo.InvariantCulture,"{0} {1} obj\n<< /Type /Catalog\n/Pages {2}\n", Number, Generation, pages.Reference);
 
@@ -27,15 +27,15 @@ namespace Melon.Pdf.Objects
 			return s;
 		}
 		
-		public void setPages(PDFPages pages){
+		public void setPages(PdfPages pages){
 			this.pages = pages ;
 		}
 
-		public void addPage(PDFPage page){
+		public void addPage(PdfPage page){
 			pages.addPage(page);
 		}
 
-		public PDFOutline RootOutlines 
+		public PdfOutline RootOutlines 
 		{
 			set 
 			{

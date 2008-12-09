@@ -6,7 +6,7 @@ namespace Melon.Pdf.Objects
 		{	
 			return "/DCTDecode";
 		}
-		public override byte[] encode(byte[] data)
+		public override byte[] Encode(byte[] data)
 		{
 			return data ;
 		}

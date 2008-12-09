@@ -4,23 +4,23 @@ using System.Globalization;
 
 namespace Melon.Pdf.Objects
 {
-	public class PDFResources : PDFObject{
+	public class PdfResources : PdfObject{
 		
 		protected Hashtable fonts = new Hashtable();
 		protected Hashtable images = new Hashtable();
 		
-		public PDFResources(int number):base(number){
+		public PdfResources(int number):base(number){
 		}
 
-		public void addFont(PDFFont font){
+		public void addFont(PdfFont font){
 			fonts.Add(font.FontName,font);
 		}
 
-		public void addImage(PDFImage image){
+		public void addImage(PdfImage image){
 			images.Add(image.Name,image);
 		}
 		
-		public override string ToPDF(){
+		public override string ToPdf(){
 
 			string s = string.Format(CultureInfo.InvariantCulture,"{0} {1} obj\n<<\n", Number, Generation);
 
@@ -29,7 +29,7 @@ namespace Melon.Pdf.Objects
 				s = s + "/Font << ";
 				var it = fonts.GetEnumerator();
 				while (it.MoveNext()){
-					s = string.Format("{0}/{1} {2} ", s, it.Key, ((PDFFont)it.Value).Reference) ;
+					s = string.Format("{0}/{1} {2} ", s, it.Key, ((PdfFont)it.Value).Reference) ;
 				}
 				s = s + " >>\n";
 			}
@@ -40,7 +40,7 @@ namespace Melon.Pdf.Objects
 				s = s + "/XObject << ";
 				var it = images.GetEnumerator();
 				while(it.MoveNext()){
-					s = string.Format("{0}/{1} {2} ", s, it.Key, ((PDFImage)it.Value).Reference)  ;
+					s = string.Format("{0}/{1} {2} ", s, it.Key, ((PdfImage)it.Value).Reference)  ;
 				}
 				s = s + " >>\n";
 			}

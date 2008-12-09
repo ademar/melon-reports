@@ -6,15 +6,15 @@ namespace Melon.Pdf.Objects
 	/// <summary>
 	/// Represents an Outline Item Dictionary.
 	/// </summary>
-	public class PDFOutline : PDFObject
+	public class PdfOutline : PdfObject
 	{
-		PDFOutline parent; 
+		PdfOutline parent; 
 
-		PDFOutline prev;
-		PDFOutline next;
+		PdfOutline prev;
+		PdfOutline next;
 
-		PDFOutline first;
-		PDFOutline last;
+		PdfOutline first;
+		PdfOutline last;
 
 		int count;
 
@@ -22,7 +22,7 @@ namespace Melon.Pdf.Objects
 
 		readonly ArrayList childs  = new ArrayList();
 
-		public PDFOutline(int number, string title, string dest):base(number)
+		public PdfOutline(int number, string title, string dest):base(number)
 		{
 			Title = title ;
 			this.dest = dest ;
@@ -30,11 +30,11 @@ namespace Melon.Pdf.Objects
 
 		public string Title { get; set; }
 
-		public void AddItem(PDFOutline outline)
+		public void AddItem(PdfOutline outline)
 		{
 			if(childs.Count > 0)
 			{
-				outline.prev = (PDFOutline)childs[childs.Count - 1];
+				outline.prev = (PdfOutline)childs[childs.Count - 1];
 				outline.prev.next = outline ;
 			}
 			else
@@ -48,7 +48,7 @@ namespace Melon.Pdf.Objects
 			last = outline;
 		}
 
-		public override string ToPDF()
+		public override string ToPdf()
 		{
 			 var str =  new StringBuilder(string.Format("{0} {1} obj\n<<\n", Number, Generation));
 

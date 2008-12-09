@@ -11,7 +11,7 @@ namespace Melon.Pdf.Objects
 	/// tags suported :
 	/// /Title, /Author, /Subject, /Keywords, /Creator, /Producer, /CreationDate
 	/// </summary>
-	public class PDFInfo : PDFObject{
+	public class PdfInfo : PdfObject{
 		
 		public string Title;
 		public string Author;
@@ -21,11 +21,11 @@ namespace Melon.Pdf.Objects
 
 		private const string producer = "Melon v0.1";
 		
-		public PDFInfo(int number):base(number)
+		public PdfInfo(int number):base(number)
 		{
 		}
 
-		public override string ToPDF()
+		public override string ToPdf()
 		{
 			return string.Format(CultureInfo.InvariantCulture, "{0} {1} obj\n<< /Type /Info\n/Producer ({2})\n/CreationDate ({3}) >>\nendobj\n", Number, Generation, producer, DateTime.Now);
 		}

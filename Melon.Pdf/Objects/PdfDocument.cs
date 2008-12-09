@@ -8,13 +8,13 @@ namespace Melon.Pdf.Objects
 	using System.IO;
 	using Imaging;
 	
-	public class PDFDocument{
+	public class PdfDocument{
 		
-		protected PDFRoot root ;
-		protected PDFPages pages;
-		protected PDFInfo info;
-		protected PDFResources resources;
-		protected PDFOutline outlineRoot;
+		protected PdfRoot root ;
+		protected PdfPages pages;
+		protected PdfInfo info;
+		protected PdfResources resources;
+		protected PdfOutline outlineRoot;
 		
 		protected int objectcounter;
 		protected int imagecounter;
@@ -23,42 +23,42 @@ namespace Melon.Pdf.Objects
 		
 		protected ArrayList trailer = new ArrayList();
 		
-		public PDFDocument(){
+		public PdfDocument(){
 			pages = MakePages();
 			root = MakeRoot(pages);
 			resources = MakeResources();
 			info = MakeInfo();
 		}
 		
-		protected PDFRoot MakeRoot(PDFPages pages){
+		protected PdfRoot MakeRoot(PdfPages pages){
 
-			var root = new PDFRoot(++objectcounter,pages);
+			var root = new PdfRoot(++objectcounter,pages);
 			trailer.Add(root);
 			return root;
 		}
 
-		protected PDFPages MakePages(){
+		protected PdfPages MakePages(){
 
-			var pages = new PDFPages(++objectcounter);
+			var pages = new PdfPages(++objectcounter);
 			trailer.Add(pages);
 			return pages;
 		}
 
-		protected PDFResources MakeResources(){
+		protected PdfResources MakeResources(){
 
-			var resources = new PDFResources(++objectcounter);
+			var resources = new PdfResources(++objectcounter);
 			trailer.Add(resources);
 			return resources;
 		}
 
-		protected PDFInfo MakeInfo(){
+		protected PdfInfo MakeInfo(){
 
-			var info = new PDFInfo(++objectcounter);
+			var info = new PdfInfo(++objectcounter);
 			trailer.Add(info);
 			return info;
 		}
 
-		public PDFOutline OutlineRoot 
+		public PdfOutline OutlineRoot 
 		{
 			get
 			{
@@ -67,18 +67,18 @@ namespace Melon.Pdf.Objects
 					return outlineRoot;
 				}
 
-				outlineRoot = new PDFOutline(++objectcounter,null,null);
+				outlineRoot = new PdfOutline(++objectcounter,null,null);
 				root.RootOutlines = outlineRoot;
 				trailer.Add(outlineRoot);
 				return outlineRoot;
 			}
 		}
 
-		public PDFOutline MakeOutline(PDFOutline parent,string title,PDFPage page)
+		public PdfOutline MakeOutline(PdfOutline parent,string title,PdfPage page)
 		{
 			var target = string.Format(CultureInfo.InvariantCulture, "[{0} /XYZ null null 0]", page.Reference);
 
-			var outline = new PDFOutline(++objectcounter,title,target);
+			var outline = new PdfOutline(++objectcounter,title,target);
 
 			if(parent!=null)
 			{
@@ -89,26 +89,26 @@ namespace Melon.Pdf.Objects
 			return outline ;
 		}
 
-		public PDFPage MakePage(PDFStream content, int width,int height){
+		public PdfPage MakePage(PdfStream content, int width,int height){
 			
-			var page = new PDFPage(++objectcounter,resources,content,width,height);
+			var page = new PdfPage(++objectcounter,resources,content,width,height);
 			trailer.Add(page);
 			root.addPage(page);
 			
 			return page;
 		}
 
-		public PDFStream MakeStream(){
+		public PdfStream MakeStream(){
 
-			var ps = new PDFStream(++objectcounter);
+			var ps = new PdfStream(++objectcounter);
 			trailer.Add(ps);
 
 			return ps;
 		}
 		
-		public string MakeFont(string fontname, byte subtype,string basefont){
+		public string MakeFont(string fontname, string subtype,string basefont){
 
-			var f = new PDFFont(++objectcounter,fontname,subtype,basefont);
+			var f = new PdfFont(++objectcounter,fontname,subtype,basefont);
 
 			trailer.Add(f);
 			resources.addFont(f);
@@ -118,7 +118,7 @@ namespace Melon.Pdf.Objects
 		
 		public int AddImage(AbstractImage img){
 
-			var pdfImg = new PDFImage(++objectcounter,++imagecounter,img);
+			var pdfImg = new PdfImage(++objectcounter,++imagecounter,img);
 			trailer.Add(pdfImg);
 			resources.addImage(pdfImg);
 			return imagecounter ;
@@ -158,9 +158,9 @@ namespace Melon.Pdf.Objects
 
 			while(it.MoveNext()){
 
-				var o = (PDFObject)it.Current;
+				var o = (PdfObject)it.Current;
 				location.Insert(o.Number-1,currentoffset);
-				currentoffset+=o.output(stream);
+				currentoffset+=o.Output(stream);
 			}
 
 			xrefOffset = currentoffset;
