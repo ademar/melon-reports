@@ -10,27 +10,28 @@ namespace Melon.Reports.Objects
 			Right,
 			Center,
 			Left,
-            Justified
+			Justified
 		}
 
-		public Color color ;
+		public Color color;
 
 		public Text()
-		{}
-		
+		{
+		}
+
 		public Text(string text)
 		{
-			Label = text ;
+			Label = text;
 		}
-		
-		public Text(string text,Alignment align,int x, int y)
+
+		public Text(string text, Alignment align, int x, int y)
 		{
-			Label = text ;
-			Align = align ;
-			X = x ;
-			Y = y ;
+			Label = text;
+			Align = align;
+			X = x;
+			Y = y;
 		}
-		
+
 		public Alignment Align { get; set; }
 
 		public string Label { get; private set; }

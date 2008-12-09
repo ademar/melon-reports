@@ -5,10 +5,11 @@ namespace Melon.Reports.Objects
 	/// <summary>
 	/// Summary description for Field.
 	/// </summary>
-	public class Field 
+	public class Field
 	{
 		public Field()
-		{}
+		{
+		}
 
 		public Field(string name)
 		{

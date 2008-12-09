@@ -5,7 +5,7 @@ namespace Melon.Reports.Objects
 {
 	public class Document
 	{
-		readonly PageCollection pages = new PageCollection();
+		private readonly PageCollection pages = new PageCollection();
 
 		public Document()
 		{
@@ -15,13 +15,13 @@ namespace Melon.Reports.Objects
 		public Document(int height, int width)
 		{
 			Fonts = new ArrayList();
-			Height =  height ;
-			Width = width ;
+			Height = height;
+			Width = width;
 		}
-		
+
 		public Page AddPage()
 		{
-			var page = new Page(Height,Width);
+			var page = new Page(Height, Width);
 			pages.AddPage(page);
 			return page;
 		}
@@ -34,14 +34,9 @@ namespace Melon.Reports.Objects
 
 		public Array Images { get; set; }
 
-		public ArrayList Pages 
+		public ArrayList Pages
 		{
-			get
-			{
-				return pages.Pages ;
-			}
+			get { return pages.Pages; }
 		}
-
-
 	}
 }

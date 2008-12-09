@@ -5,25 +5,23 @@ using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 
 namespace Melon.Pdf.Objects
 {
-	public class FlateFilter : Filter {
-		
-		public override string Name() {
-			
-				return "/FlateDecode";
+	public class FlateFilter : Filter
+	{
+		public override string Name()
+		{
+			return "/FlateDecode";
 		}
-		
-		public override byte[] Encode(byte[] data){ 
-			
-			MemoryStream o =  new MemoryStream(); 
-			
-			DeflaterOutputStream compressed = new DeflaterOutputStream(o,new Deflater(1));
-			compressed.Write(data,0,data.Length);
+
+		public override byte[] Encode(byte[] data)
+		{
+			MemoryStream o = new MemoryStream();
+
+			DeflaterOutputStream compressed = new DeflaterOutputStream(o, new Deflater(1));
+			compressed.Write(data, 0, data.Length);
 			compressed.Flush();
 			compressed.Close();
-			
+
 			return o.ToArray();
-			
-			
 		}
 
 		public override string GetDecodeParameters()
@@ -31,5 +29,4 @@ namespace Melon.Pdf.Objects
 			return null;
 		}
 	}
-	
 }

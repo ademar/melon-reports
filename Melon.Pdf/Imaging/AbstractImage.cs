@@ -3,10 +3,10 @@ using System;
 using System.IO;
 using Melon.Pdf.Objects;
 
-namespace Melon.Pdf.Imaging{
-
-	public abstract class AbstractImage{
-		
+namespace Melon.Pdf.Imaging
+{
+	public abstract class AbstractImage
+	{
 		protected int m_width;
 		protected int m_height;
 		protected string m_href;
@@ -16,94 +16,89 @@ namespace Melon.Pdf.Imaging{
 		protected bool m_isTransparent;
 		protected int m_transparentColor;
 		protected int m_bitsPerPixel;
-        protected bool m_adobeFlag;
+		protected bool m_adobeFlag;
 		protected ColorSpace m_colorSpace;
 		protected Filter m_filter;
 
 
-		protected AbstractImage(string href){
+		protected AbstractImage(string href)
+		{
 			m_href = href;
-			m_uri =  new Uri(href);
+			m_uri = new Uri(href);
 		}
 
 		protected AbstractImage(Uri the_uri)
 		{
 			m_uri = the_uri;
 		}
-		
+
 		protected abstract void LoadImage();
-		
-		public string GetURL{
-			get {
-				return m_href;
-			}
+
+		public string GetURL
+		{
+			get { return m_href; }
 		}
 
-		public Uri Uri 
+		public Uri Uri
+		{
+			get { return m_uri; }
+		}
+
+		public int Width
 		{
 			get
 			{
-				return m_uri ;
-			}
-		}
-		public int Width {
-			get {
-				if (m_width==0) LoadImage();
+				if (m_width == 0) LoadImage();
 				return m_width;
 			}
 		}
-		public int Height {
-			get {
-				if (m_height==0) LoadImage();
+
+		public int Height
+		{
+			get
+			{
+				if (m_height == 0) LoadImage();
 				return m_height;
 			}
 		}
-		public int BitsPerPixel {
-			get {
-				if (m_bitsPerPixel==0) LoadImage();
+
+		public int BitsPerPixel
+		{
+			get
+			{
+				if (m_bitsPerPixel == 0) LoadImage();
 				return m_bitsPerPixel;
 			}
 		}
+
 		public bool IsTransparent
 		{
-			get
-			{
-				return m_isTransparent ;
-			}
-		}
-		public int TransparentColor 
-		{
-			get
-			{
-				return m_transparentColor ;
-			}
-		}
-		public bool IsAdobe 
-		{
-			get
-			{
-				return m_adobeFlag ;
-			}
-		}
-		public Filter Filter 
-		{
-			get
-			{
-				return m_filter;
-			}
+			get { return m_isTransparent; }
 		}
 
-		public ColorSpace ColorSpace 
+		public int TransparentColor
 		{
-			get
-			{
-				return m_colorSpace ;
-			}
+			get { return m_transparentColor; }
 		}
 
-		public byte[] GetBitmaps() {
+		public bool IsAdobe
+		{
+			get { return m_adobeFlag; }
+		}
 
-			if (m_bitmaps == null ) LoadImage();
+		public Filter Filter
+		{
+			get { return m_filter; }
+		}
+
+		public ColorSpace ColorSpace
+		{
+			get { return m_colorSpace; }
+		}
+
+		public byte[] GetBitmaps()
+		{
+			if (m_bitmaps == null) LoadImage();
 
 			return m_bitmaps;
 		}
@@ -113,38 +108,37 @@ namespace Melon.Pdf.Imaging{
 			FileStream ImageHolder;
 			try
 			{
-				ImageHolder = new FileStream(href,FileMode.Open,FileAccess.Read,FileShare.Read,8192);
+				ImageHolder = new FileStream(href, FileMode.Open, FileAccess.Read, FileShare.Read, 8192);
 			}
-			catch(ArgumentException )
+			catch (ArgumentException)
 			{
 				throw new ImageFormatException("Invalid image URI: " + href);
 			}
 
-			var header = new byte[2] ;
-			ImageHolder.Read(header,0,2);
+			var header = new byte[2];
+			ImageHolder.Read(header, 0, 2);
 			ImageHolder.Close();
-			if (header[0]==0x47/*G*/ && header[1]==0x49/*I*/)
+			if (header[0] == 0x47 /*G*/&& header[1] == 0x49 /*I*/)
 			{
 				return new GifImage(href);
-
 			}
-			
-			if (header[0]==0xFF && header[1]==JpgImage.M_SOI)
+
+			if (header[0] == 0xFF && header[1] == JpgImage.M_SOI)
 			{
 				return new JpgImage(href);
 			}
-			
+
 			throw new ImageFormatException();
 		}
 
-		protected static int toShort(int firstByte,int secondByte)
+		protected static int toShort(int firstByte, int secondByte)
 		{
-			return ((firstByte << 8 ) + secondByte);
+			return ((firstByte << 8) + secondByte);
 		}
-		
-		protected static int toShortInverted(int firstByte,int secondByte)
+
+		protected static int toShortInverted(int firstByte, int secondByte)
 		{
-			return ((secondByte<< 8 ) + firstByte );
+			return ((secondByte << 8) + firstByte);
 		}
 	}
 }

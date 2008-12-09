@@ -8,9 +8,9 @@ namespace Melon.Printer
 	public class PDFDriver : AbstractDriver
 	{
 		private PdfPage currentPage;
-		
+
 		private string defaultFont;
-        
+
 		public override void Print(Document document, Stream printStream)
 		{
 			var pdf = new PdfDocument();
@@ -29,7 +29,7 @@ namespace Melon.Printer
 
 			foreach (Page page in document.Pages)
 			{
-				PrintPage(page,pdf);
+				PrintPage(page, pdf);
 			}
 
 			pdf.outputHeader(printStream);
@@ -37,56 +37,53 @@ namespace Melon.Printer
 			pdf.outputTrailer(printStream, offset);
 
 			printStream.Flush();
-
 		}
 
-		
+
 		public void PrintPage(Page page, PdfDocument pdf)
 		{
 			var currentPDFStream = pdf.MakeStream();
-            
-			currentPage = pdf.MakePage(currentPDFStream,page.Width,page.Height);
+
+			currentPage = pdf.MakePage(currentPDFStream, page.Width, page.Height);
 
 			foreach (BasicElement be in page.Elements)
 			{
 				PrintElement(be, pdf, currentPDFStream);
 			}
-			
 		}
-		
+
 		public void PrintElement(BasicElement element, PdfDocument pdf, PdfStream pdfStream)
 		{
 			var type = element.GetType();
 
 			var adapter = new PDFStreamAdapter(pdfStream, defaultFont);
 
-			if(type == typeof(Text)) 
+			if (type == typeof (Text))
 			{
-				adapter.PrintText((Text)element);
+				adapter.PrintText((Text) element);
 			}
-			else if(type == typeof(Expression)) 
+			else if (type == typeof (Expression))
 			{
-				adapter.PrintExpression((Expression)element);
+				adapter.PrintExpression((Expression) element);
 			}
-			else if(type == typeof(Image)) 
+			else if (type == typeof (Image))
 			{
-				adapter.PrintImage((Image)element);
+				adapter.PrintImage((Image) element);
 			}
-			else if(type == typeof(Rectangle)) 
+			else if (type == typeof (Rectangle))
 			{
-				adapter.PrintRectangle((Rectangle)element);
+				adapter.PrintRectangle((Rectangle) element);
 			}
-			else if(type == typeof(Bookmark)) 
+			else if (type == typeof (Bookmark))
 			{
-				PrintBookmark((Bookmark)element,pdf);
+				PrintBookmark((Bookmark) element, pdf);
 			}
 		}
 
 		public void PrintBookmark(Bookmark b, PdfDocument pdf)
 		{
-			pdf.MakeOutline(pdf.OutlineRoot,b.VarName,currentPage);
+			pdf.MakeOutline(pdf.OutlineRoot, b.VarName, currentPage);
 		}
-		
 	}
 
 	public class PDFStreamAdapter

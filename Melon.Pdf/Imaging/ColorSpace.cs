@@ -4,24 +4,26 @@ using System.Text;
 
 namespace Melon.Pdf.Imaging
 {
-	public class ColorSpace{
-		
+	public class ColorSpace
+	{
 		protected ColorDevice m_colorDevice = ColorDevice.DeviceUnknown;
 
-		readonly ArrayList m_devices = new ArrayList();
-		readonly ArrayList m_ctables = new ArrayList();
+		private readonly ArrayList m_devices = new ArrayList();
+		private readonly ArrayList m_ctables = new ArrayList();
 
-		public ColorSpace(ColorDevice colorDevice){
-			m_colorDevice = colorDevice ;
+		public ColorSpace(ColorDevice colorDevice)
+		{
+			m_colorDevice = colorDevice;
 			m_devices.Add(colorDevice);
 		}
+
 		public ColorSpace()
 		{
 		}
 
-		static string DeviceName (ColorDevice cd)
+		private static string DeviceName(ColorDevice cd)
 		{
-			switch(cd)
+			switch (cd)
 			{
 				case ColorDevice.DeviceGray:
 					return "/DeviceGray";
@@ -36,21 +38,18 @@ namespace Melon.Pdf.Imaging
 				default:
 					return "/DeviceUnknown";
 			}
-			
-
 		}
+
 		public ColorDevice ColorDevice
 		{
-			get
-			{
-				return m_colorDevice;
-			}
+			get { return m_colorDevice; }
 		}
 
 		public void AddDevice(ColorDevice device)
 		{
 			m_devices.Add(device);
 		}
+
 		public void AddColorTable(ColorTable colortable)
 		{
 			m_ctables.Add(colortable);
@@ -58,19 +57,19 @@ namespace Melon.Pdf.Imaging
 
 		public string GetRepresentation()
 		{
-			if (m_devices.Count == 1 &&  m_ctables.Count==0) 
-				return DeviceName((ColorDevice)m_devices[0]);
-			
-			if (m_devices.Count>1)
+			if (m_devices.Count == 1 && m_ctables.Count == 0)
+				return DeviceName((ColorDevice) m_devices[0]);
+
+			if (m_devices.Count > 1)
 			{
 				var s = new StringBuilder("[ ");
-				for(var i=0 ; i<m_devices.Count; i++)
+				for (var i = 0; i < m_devices.Count; i++)
 				{
-					s.Append(DeviceName((ColorDevice)m_devices[i]) + " ");
+					s.Append(DeviceName((ColorDevice) m_devices[i]) + " ");
 				}
-				for(var i=0 ; i<m_ctables.Count;i++)
+				for (var i = 0; i < m_ctables.Count; i++)
 				{
-					s.Append(((ColorTable)m_ctables[i]).GetRepresentation() + " ");
+					s.Append(((ColorTable) m_ctables[i]).GetRepresentation() + " ");
 				}
 				s.Append("]");
 				return s.ToString();

@@ -4,8 +4,8 @@ namespace Melon.Reports.Objects
 	{
 		public Font(string name, string fontName)
 		{
-			Name = name ;
-			FontName = fontName ;
+			Name = name;
+			FontName = fontName;
 		}
 
 		public string Name { get; set; }

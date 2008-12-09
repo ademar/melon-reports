@@ -8,88 +8,88 @@ namespace Melon.Pdf.Objects
 	/// </summary>
 	public class PdfOutline : PdfObject
 	{
-		PdfOutline parent; 
+		private PdfOutline parent;
 
-		PdfOutline prev;
-		PdfOutline next;
+		private PdfOutline prev;
+		private PdfOutline next;
 
-		PdfOutline first;
-		PdfOutline last;
+		private PdfOutline first;
+		private PdfOutline last;
 
-		int count;
+		private int count;
 
-		readonly string dest ;
+		private readonly string dest;
 
-		readonly ArrayList childs  = new ArrayList();
+		private readonly ArrayList childs = new ArrayList();
 
-		public PdfOutline(int number, string title, string dest):base(number)
+		public PdfOutline(int number, string title, string dest) : base(number)
 		{
-			Title = title ;
-			this.dest = dest ;
+			Title = title;
+			this.dest = dest;
 		}
 
 		public string Title { get; set; }
 
 		public void AddItem(PdfOutline outline)
 		{
-			if(childs.Count > 0)
+			if (childs.Count > 0)
 			{
-				outline.prev = (PdfOutline)childs[childs.Count - 1];
-				outline.prev.next = outline ;
+				outline.prev = (PdfOutline) childs[childs.Count - 1];
+				outline.prev.next = outline;
 			}
 			else
 			{
-				first = outline ;
+				first = outline;
 			}
 
 			childs.Add(outline);
-			outline.parent = this ;
+			outline.parent = this;
 
 			last = outline;
 		}
 
 		public override string ToPdf()
 		{
-			 var str =  new StringBuilder(string.Format("{0} {1} obj\n<<\n", Number, Generation));
+			var str = new StringBuilder(string.Format("{0} {1} obj\n<<\n", Number, Generation));
 
-			 if (parent==null)
-			 {
-				 if(first!=null && last!=null)
-				 {
-					 str.Append(" /First " + first.Reference + "\n");
-					 str.Append(" /Last " + last.Reference + "\n");
-				 }
-			 }
-			 else
-			 {
-				 str.Append(" /Title (" + Title + ")\n");
-				 str.Append(" /Parent " + parent.Reference + "\n");
+			if (parent == null)
+			{
+				if (first != null && last != null)
+				{
+					str.Append(" /First " + first.Reference + "\n");
+					str.Append(" /Last " + last.Reference + "\n");
+				}
+			}
+			else
+			{
+				str.Append(" /Title (" + Title + ")\n");
+				str.Append(" /Parent " + parent.Reference + "\n");
 
-				 if (first!=null && last!=null)
-				 {
-					 str.Append(" /First " + first.Reference + "\n");
-					 str.Append(" /Last " + last.Reference + "\n");
-				 }
-				 if (prev!=null)
-				 {
-					 str.Append(" /Prev " + prev.Reference + "\n");
-				 }
-				 if (next!=null)
-				 {
-					 str.Append(" /Next " + next.Reference + "\n");
-				 }
-				 if (count>0)
-				 {
-					 str.Append(" /Count -" + count + "\n");
-				 }
-				 if (dest!=null)
-				 {
+				if (first != null && last != null)
+				{
+					str.Append(" /First " + first.Reference + "\n");
+					str.Append(" /Last " + last.Reference + "\n");
+				}
+				if (prev != null)
+				{
+					str.Append(" /Prev " + prev.Reference + "\n");
+				}
+				if (next != null)
+				{
+					str.Append(" /Next " + next.Reference + "\n");
+				}
+				if (count > 0)
+				{
+					str.Append(" /Count -" + count + "\n");
+				}
+				if (dest != null)
+				{
 					str.Append(" /Dest " + dest + "\n");
-				 }
-			 }
-			 str.Append(">> endobj\n");
+				}
+			}
+			str.Append(">> endobj\n");
 
-			 return str.ToString();
+			return str.ToString();
 		}
 	}
 }

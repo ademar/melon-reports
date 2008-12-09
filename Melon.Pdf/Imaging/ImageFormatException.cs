@@ -8,7 +8,7 @@ namespace Melon.Pdf.Imaging
 		{
 		}
 
-		public ImageFormatException(string msg):base(msg)
+		public ImageFormatException(string msg) : base(msg)
 		{
 		}
 	}

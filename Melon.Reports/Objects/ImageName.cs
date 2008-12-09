@@ -12,7 +12,7 @@ namespace Melon.Reports.Objects
 
 		public ImageName(string name)
 		{
-			Name =  name ;
+			Name = name;
 		}
 
 		public string Name { get; set; }

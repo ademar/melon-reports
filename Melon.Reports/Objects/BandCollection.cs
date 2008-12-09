@@ -15,7 +15,7 @@ namespace Melon.Reports.Objects
 		public void AddBand(Band band)
 		{
 			Bands.Add(band);
-			Height+=band.Height ;
+			Height += band.Height;
 		}
 
 		public ArrayList Bands { get; private set; }

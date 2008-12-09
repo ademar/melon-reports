@@ -7,13 +7,13 @@ namespace Melon.Reports.Objects
 	{
 		public Bookmark(string varName)
 		{
-			VarName = varName ;
+			VarName = varName;
 		}
 
 		public Bookmark() : this("")
 		{
 		}
-        
+
 		public string VarName { get; set; }
 	}
 }

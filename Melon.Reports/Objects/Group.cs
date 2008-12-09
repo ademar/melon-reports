@@ -12,7 +12,7 @@ namespace Melon.Reports.Objects
 		{
 			if (GroupChange != null)
 			{
-				GroupChange(this,e);
+				GroupChange(this, e);
 			}
 		}
 
@@ -26,7 +26,7 @@ namespace Melon.Reports.Objects
 		{
 			GroupFooter = new BandCollection();
 			GroupHeader = new BandCollection();
-			Name = name ;
+			Name = name;
 		}
 
 		public string Name { get; set; }

@@ -40,20 +40,20 @@ namespace Melon.Reports.Objects
 			Height = height;
 			Width = width;
 		}
-		
+
 		public void AddField(Field f)
 		{
-			Fields.Add(f.Name,f);
+			Fields.Add(f.Name, f);
 		}
-		
+
 		public void AddVariable(Variable v)
 		{
-			VariableCollection.Add(v.Name,v);
+			VariableCollection.Add(v.Name, v);
 		}
-		
+
 		public void AddParameter(Parameter p)
 		{
-			ParameterCollection.Add(p.Name,p);
+			ParameterCollection.Add(p.Name, p);
 		}
 
 		public void AddFont(Font f)
@@ -107,4 +107,3 @@ namespace Melon.Reports.Objects
 		public Hashtable ImageCollection { get; private set; }
 	}
 }
-

@@ -7,16 +7,16 @@ namespace Melon.Reports
 	public class Generator
 	{
 		private readonly Report report;
-		int h;
+		private int h;
 		private readonly ExpressionBuilder expressionBuilder;
 		private readonly Calculator calculator;
 
 		public Generator(Report report)
 		{
 			Connection = null;
-			this.report = report ;
+			this.report = report;
 
-			expressionBuilder = new ExpressionBuilder(report.Fields,report.VariableCollection,report.ExpressionCollection);
+			expressionBuilder = new ExpressionBuilder(report.Fields, report.VariableCollection, report.ExpressionCollection);
 
 			calculator = new Calculator(expressionBuilder);
 		}
@@ -25,22 +25,22 @@ namespace Melon.Reports
 		{
 			expressionBuilder.BuildExpressions(report);
 
-			Doc =  new Document {Fonts = report.Fonts, Images = new Image[report.ImageCollection.Count]};
+			Doc = new Document {Fonts = report.Fonts, Images = new Image[report.ImageCollection.Count]};
 
-			report.ImageCollection.Values.CopyTo(Doc.Images,0);
-			
+			report.ImageCollection.Values.CopyTo(Doc.Images, 0);
+
 			var com = Connection.CreateCommand();
-			com.CommandText = report.QueryString ;
-						
-			Connection.Open();
-			
-			var dataReader = com.ExecuteReader();
-			
-			h = report.Height - report.TopMargin ;
+			com.CommandText = report.QueryString;
 
-			var page = Doc.AddPage(); 
-			page.Height = report.Height ;
-			page.Width = report.Width ;
+			Connection.Open();
+
+			var dataReader = com.ExecuteReader();
+
+			h = report.Height - report.TopMargin;
+
+			var page = Doc.AddPage();
+			page.Height = report.Height;
+			page.Width = report.Width;
 
 			// DOUBT : cuando se evaluan el header y el footer ;
 			// dos opciones : antes de evaluar la pagina o despues
@@ -48,85 +48,80 @@ namespace Melon.Reports
 
 			page.PutBands(report.PageHeader, ref h);
 
-			int RECORD_COUNT = 0 ;
-			int PAGE_NUMBER = 1 ;
+			int RECORD_COUNT = 0;
+			int PAGE_NUMBER = 1;
 
 			expressionBuilder.SetField("PageNumber", PAGE_NUMBER);
 
 			//a reversed copy of the group array
-			var reversedGroups = (ArrayList)report.Groups.Clone();
+			var reversedGroups = (ArrayList) report.Groups.Clone();
 			reversedGroups.Reverse();
 
-			while(dataReader.Read())
+			while (dataReader.Read())
 			{
-				RECORD_COUNT++ ;
+				RECORD_COUNT++;
 
-				calculator.UpdateFields(report.Fields,dataReader,report);
+				calculator.UpdateFields(report.Fields, dataReader, report);
 				//Evaluate Variables
 
 				expressionBuilder.SetField("GlobalRecordCount", RECORD_COUNT);
 
 				calculator.EvaluateExpressions(report);
-				
+
 				//maybe it can be improved
 				//check groups -- close in reversed order
-				foreach(Group g in reversedGroups)
+				foreach (Group g in reversedGroups)
 				{
 					object o = expressionBuilder.EvaluateVariable(g.Invariant);
-					if (!Equals(o,g.Value) && g.IsOpen)
+					if (!Equals(o, g.Value) && g.IsOpen)
 					{
-						page.PutBands(g.GroupFooter,ref h);
-						g.IsOpen = false ;
+						page.PutBands(g.GroupFooter, ref h);
+						g.IsOpen = false;
 					}
 				}
 
-				foreach(Group g in report.Groups)
+				foreach (Group g in report.Groups)
 				{
 					//get actual value of asociated variable
 					object o = expressionBuilder.EvaluateVariable(g.Invariant);
-					if (!Equals(o,g.Value))
+					if (!Equals(o, g.Value))
 					{
 						g.OnGroupChange(new GroupChangeEventArgs(report));
-						g.Value = o ;
-						g.Counter = 0 ;
-						page.PutBands(g.GroupHeader,ref h);
-						g.IsOpen = true ;
+						g.Value = o;
+						g.Counter = 0;
+						page.PutBands(g.GroupHeader, ref h);
+						g.IsOpen = true;
 					}
-					
-					g.Counter++ ;
-					
+
+					g.Counter++;
 				}
 
 				// details
 
-				IEnumerator it = report.Detail.Bands.GetEnumerator();//las bandas del detalle
-				while(it.MoveNext())
+				IEnumerator it = report.Detail.Bands.GetEnumerator(); //las bandas del detalle
+				while (it.MoveNext())
 				{
-					Band band = (Band)it.Current ;
-					
+					Band band = (Band) it.Current;
+
 
 					// HACK : page break??
 					if (h < (report.BottonMargin + report.PageFooter.Height))
 					{
-						page.PutBands(report.PageFooter,ref h);	
-						page = Doc.AddPage(); 
-						page.Height = report.Height ;
-						page.Width = report.Width ;
-						h = report.Height - report.TopMargin ; //reset h
+						page.PutBands(report.PageFooter, ref h);
+						page = Doc.AddPage();
+						page.Height = report.Height;
+						page.Width = report.Width;
+						h = report.Height - report.TopMargin; //reset h
 						page.PutBands(report.PageHeader, ref h);
-						PAGE_NUMBER ++ ;
+						PAGE_NUMBER ++;
 						expressionBuilder.SetField("PageNumber", PAGE_NUMBER);
-					
 					}
-					
-					page.PutBand(band,h);
-					h-=band.Height;
-					
+
+					page.PutBand(band, h);
+					h -= band.Height;
 				}
-				
 			}
-			page.PutBands(report.PageFooter,ref h); //one last footer
-		
+			page.PutBands(report.PageFooter, ref h); //one last footer
 		}
 
 		public Document Doc { get; private set; }

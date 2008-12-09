@@ -3,16 +3,15 @@ using System.Globalization;
 
 namespace Melon.Pdf.Objects
 {
-	
-	using System ;
-	
+	using System;
+
 	///<summary>
 	/// Represents a PDF Info dictionary object.
 	/// tags suported :
 	/// /Title, /Author, /Subject, /Keywords, /Creator, /Producer, /CreationDate
 	/// </summary>
-	public class PdfInfo : PdfObject{
-		
+	public class PdfInfo : PdfObject
+	{
 		public string Title;
 		public string Author;
 		public string Subject;
@@ -20,14 +19,16 @@ namespace Melon.Pdf.Objects
 		public string Creator;
 
 		private const string producer = "Melon v0.1";
-		
-		public PdfInfo(int number):base(number)
+
+		public PdfInfo(int number) : base(number)
 		{
 		}
 
 		public override string ToPdf()
 		{
-			return string.Format(CultureInfo.InvariantCulture, "{0} {1} obj\n<< /Type /Info\n/Producer ({2})\n/CreationDate ({3}) >>\nendobj\n", Number, Generation, producer, DateTime.Now);
+			return string.Format(CultureInfo.InvariantCulture,
+			                     "{0} {1} obj\n<< /Type /Info\n/Producer ({2})\n/CreationDate ({3}) >>\nendobj\n", Number,
+			                     Generation, producer, DateTime.Now);
 		}
 	}
 }

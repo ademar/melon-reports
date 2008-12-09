@@ -39,7 +39,7 @@ namespace Melon.Reports
 			namespc.Imports.Add(new CodeNamespaceImport("System"));
 			namespc.Imports.Add(new CodeNamespaceImport("Melon.Reports.Objects"));
 
-			
+
 			var ExpressionCalculatorClass = new CodeTypeDeclaration("ExpressionCalculator")
 			                                	{
 			                                		IsClass = true,
@@ -61,17 +61,17 @@ namespace Melon.Reports
 
 			while (it.MoveNext())
 			{
-				var f = new CodeMemberField(((Field)it.Value).Type, ((Field)it.Value).Name) {Attributes = MemberAttributes.Public};
+				var f = new CodeMemberField(((Field) it.Value).Type, ((Field) it.Value).Name) {Attributes = MemberAttributes.Public};
 				ExpressionCalculatorClass.Members.Add(f);
 			}
 
 			//add especial variables
 			/*	GlobalRecordCount	*/
-			var GlobalRecordCountField = new CodeMemberField(typeof(int), "GlobalRecordCount")
+			var GlobalRecordCountField = new CodeMemberField(typeof (int), "GlobalRecordCount")
 			                             	{Attributes = MemberAttributes.Public};
 			ExpressionCalculatorClass.Members.Add(GlobalRecordCountField);
 			/*	PageNumber	*/
-			var PageNumberField = new CodeMemberField(typeof(int), "PageNumber") {Attributes = MemberAttributes.Public};
+			var PageNumberField = new CodeMemberField(typeof (int), "PageNumber") {Attributes = MemberAttributes.Public};
 			ExpressionCalculatorClass.Members.Add(PageNumberField);
 
 			/*
@@ -86,14 +86,15 @@ namespace Melon.Reports
 
 			while (it.MoveNext())
 			{
-				var v = (Variable)it.Value;
+				var v = (Variable) it.Value;
 				dynaCode.Append("		case " + v.GetHashCode() + ":\n" +
-					"		o = (" + v.Type + ")" + v.Expression.Trim() + ";\n" +
-					"		break;\n");
+				                "		o = (" + v.Type + ")" + v.Expression.Trim() + ";\n" +
+				                "		break;\n");
 
 				// the property
 				var p = new CodeMemberProperty();
-				p.GetStatements.Add(new CodeSnippetStatement("return (" + v.Type + ")EvaluateVariable((Variable)variables[\"" + v.Name + "\"]);"));
+				p.GetStatements.Add(
+					new CodeSnippetStatement("return (" + v.Type + ")EvaluateVariable((Variable)variables[\"" + v.Name + "\"]);"));
 				//p.SetStatements.Add(new CodeSnippetStatement("_" + ((Variable)it.Value).Name+ " = value ;"));
 				p.Type = new CodeTypeReference(v.Type);
 				p.Name = v.Name;
@@ -103,14 +104,16 @@ namespace Melon.Reports
 			dynaCode.Append("		}\nreturn o");
 
 			var EvaluateVariableExpressionMethod = new CodeMemberMethod();
-			EvaluateVariableExpressionMethod.Parameters.Add(new CodeParameterDeclarationExpression(typeof(int), "i"));
-			EvaluateVariableExpressionMethod.Statements.Add(new CodeExpressionStatement(new CodeSnippetExpression(dynaCode.ToString())));
-			EvaluateVariableExpressionMethod.ReturnType = new CodeTypeReference(typeof(object));
+			EvaluateVariableExpressionMethod.Parameters.Add(new CodeParameterDeclarationExpression(typeof (int), "i"));
+			EvaluateVariableExpressionMethod.Statements.Add(
+				new CodeExpressionStatement(new CodeSnippetExpression(dynaCode.ToString())));
+			EvaluateVariableExpressionMethod.ReturnType = new CodeTypeReference(typeof (object));
 
 
 			ExpressionCalculatorClass.Members.Add(EvaluateVariableExpressionMethod);
 
-			EvaluateVariableExpressionMethod.Attributes = MemberAttributes.Public | MemberAttributes.Override; ;
+			EvaluateVariableExpressionMethod.Attributes = MemberAttributes.Public | MemberAttributes.Override;
+			;
 			EvaluateVariableExpressionMethod.Name = "EvaluateVariableExpression";
 
 
@@ -135,18 +138,18 @@ namespace Melon.Reports
 
 			while (it.MoveNext())
 			{
-				var ex = (Expression)it.Value;
+				var ex = (Expression) it.Value;
 				dynaCode.Append("		case " + ex.GetHashCode() + ":\n" +
-								"			o = (" + ((Expression)it.Value).Type + ")" + ((Expression)it.Value).Content + ";\n" +
-								"			break;\n");
+				                "			o = (" + ((Expression) it.Value).Type + ")" + ((Expression) it.Value).Content + ";\n" +
+				                "			break;\n");
 			}
 
 			dynaCode.Append("		}\n		return o");
 
 			var EvaluateExpressionMethod = new CodeMemberMethod();
-			EvaluateExpressionMethod.Parameters.Add(new CodeParameterDeclarationExpression(typeof(int), "i"));
+			EvaluateExpressionMethod.Parameters.Add(new CodeParameterDeclarationExpression(typeof (int), "i"));
 			EvaluateExpressionMethod.Statements.Add(new CodeExpressionStatement(new CodeSnippetExpression(dynaCode.ToString())));
-			EvaluateExpressionMethod.ReturnType = new CodeTypeReference(typeof(object));
+			EvaluateExpressionMethod.ReturnType = new CodeTypeReference(typeof (object));
 
 
 			ExpressionCalculatorClass.Members.Add(EvaluateExpressionMethod);
@@ -163,15 +166,14 @@ namespace Melon.Reports
 			w.Close();
 
 			var thisAsembly = Assembly.GetAssembly(GetType()).Location;
-			
+
 			//compilation
-			var compparams = new CompilerParameters(new[] { "mscorlib.dll", thisAsembly }) {GenerateInMemory = true};
+			var compparams = new CompilerParameters(new[] {"mscorlib.dll", thisAsembly}) {GenerateInMemory = true};
 
 			var ErrorMsg = "";
 
 			var cscompiler = csharp.CreateCompiler();
 			var compresult = cscompiler.CompileAssemblyFromDom(compparams, cu);
-
 
 
 			if (compresult == null || compresult.Errors.Count > 0)
@@ -192,8 +194,9 @@ namespace Melon.Reports
 				throw new Exception(ErrorMsg);
 			}
 
-			object o = compresult.CompiledAssembly.CreateInstance("Melon.Reports.ExpressionCalculator", 
-			true, BindingFlags.CreateInstance, null, new object[] { report }, null, null);
+			object o = compresult.CompiledAssembly.CreateInstance("Melon.Reports.ExpressionCalculator",
+			                                                      true, BindingFlags.CreateInstance, null, new object[] {report},
+			                                                      null, null);
 
 			Console.WriteLine(compresult.CompiledAssembly.Location);
 
@@ -206,7 +209,6 @@ namespace Melon.Reports
 
 			this.compiledExpressions = o;
 			this.compiledType = test;
-
 		}
 
 		public object EvaluateVariable(string variableName)
@@ -215,6 +217,7 @@ namespace Melon.Reports
 			object o = p.GetValue(compiledExpressions, null);
 			return o;
 		}
+
 		public void SetVariable(string variableName, object val)
 		{
 			PropertyInfo p = compiledType.GetProperty(variableName);
@@ -231,7 +234,6 @@ namespace Melon.Reports
 
 		public void SetField(string fieldName, object val)
 		{
-
 			Console.WriteLine("fieldName: " + fieldName);
 
 			FieldInfo f = compiledType.GetField(fieldName);

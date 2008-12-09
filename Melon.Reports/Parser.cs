@@ -95,12 +95,12 @@ namespace Melon.Reports
 								if (report.VariableCollection[g.Invariant] == null)
 								{
 									throw new Exception("Unknown variable : " + g.Invariant);
-								};
+								}
+								;
 
 								// has to do the wiring to all variables with this group as reseter
 								foreach (Variable var in report.VariableCollection.Values)
 								{
-
 									if (var.Level.Equals(Variable.RESET_TYPE_GROUP) && var.ResetingGroup.Equals(g.Name))
 									{
 										g.GroupChange += var.UpdateMe;
@@ -130,12 +130,10 @@ namespace Melon.Reports
 					band.parent = report;
 					bands.AddBand(band);
 					//parse Band content
-					ParseBand(reader, band,report);
+					ParseBand(reader, band, report);
 				}
-
 			}
 			return bands;
-
 		}
 
 		private void ParseBand(XmlReader reader, Band band, Report report)
@@ -187,8 +185,8 @@ namespace Melon.Reports
 								}*/
 
 								//check if it is already in
-								Image i = (Image)report.ImageCollection[url];
-								if (i == null)// NOTE : i don't like this way 
+								Image i = (Image) report.ImageCollection[url];
+								if (i == null) // NOTE : i don't like this way 
 								{
 									i = new Image(url, x, y);
 									i.width = width;
@@ -227,7 +225,7 @@ namespace Melon.Reports
 								break;
 							case "Bookmark":
 								string var = reader.GetAttribute("var");
-								string id = reader.GetAttribute("id");//TODO :  termina esto
+								string id = reader.GetAttribute("id"); //TODO :  termina esto
 								Bookmark b = new Bookmark(var);
 								band.AddElement(b);
 								break;

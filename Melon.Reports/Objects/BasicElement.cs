@@ -5,6 +5,6 @@ namespace Melon.Reports.Objects
 	/// </summary>
 	public class BasicElement
 	{
-		public int  H ;
+		public int H;
 	}
 }
