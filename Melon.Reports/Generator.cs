@@ -25,9 +25,9 @@ namespace Melon.Reports
 		{
 			expressionBuilder.BuildExpressions(report);
 
-			Doc = new Document {Fonts = report.Fonts, Images = new Image[report.ImageCollection.Count]};
+			Document = new Document {Fonts = report.Fonts, Images = new Image[report.ImageCollection.Count]};
 
-			report.ImageCollection.Values.CopyTo(Doc.Images, 0);
+			report.ImageCollection.Values.CopyTo(Document.Images, 0);
 
 			var com = Connection.CreateCommand();
 			com.CommandText = report.QueryString;
@@ -38,7 +38,7 @@ namespace Melon.Reports
 
 			h = report.Height - report.TopMargin;
 
-			var page = Doc.AddPage();
+			var page = Document.AddPage();
 			page.Height = report.Height;
 			page.Width = report.Width;
 
@@ -72,7 +72,7 @@ namespace Melon.Reports
 				//check groups -- close in reversed order
 				foreach (Group g in reversedGroups)
 				{
-					object o = expressionBuilder.EvaluateVariable(g.Invariant);
+					var o = expressionBuilder.EvaluateVariable(g.Invariant);
 					if (!Equals(o, g.Value) && g.IsOpen)
 					{
 						page.PutBands(g.GroupFooter, ref h);
@@ -83,7 +83,7 @@ namespace Melon.Reports
 				foreach (Group g in report.Groups)
 				{
 					//get actual value of asociated variable
-					object o = expressionBuilder.EvaluateVariable(g.Invariant);
+					var o = expressionBuilder.EvaluateVariable(g.Invariant);
 					if (!Equals(o, g.Value))
 					{
 						g.OnGroupChange(new GroupChangeEventArgs(report));
@@ -101,14 +101,14 @@ namespace Melon.Reports
 				IEnumerator it = report.Detail.Bands.GetEnumerator(); //las bandas del detalle
 				while (it.MoveNext())
 				{
-					Band band = (Band) it.Current;
+					var band = (Band) it.Current;
 
 
 					// HACK : page break??
 					if (h < (report.BottonMargin + report.PageFooter.Height))
 					{
 						page.PutBands(report.PageFooter, ref h);
-						page = Doc.AddPage();
+						page = Document.AddPage();
 						page.Height = report.Height;
 						page.Width = report.Width;
 						h = report.Height - report.TopMargin; //reset h
@@ -124,7 +124,7 @@ namespace Melon.Reports
 			page.PutBands(report.PageFooter, ref h); //one last footer
 		}
 
-		public Document Doc { get; private set; }
+		public Document Document { get; private set; }
 
 		public IDbConnection Connection { get; set; }
 	}

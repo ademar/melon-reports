@@ -1,5 +1,6 @@
 using System;
 using System.Xml;
+using Melon.Commons;
 using Melon.Reports.Objects;
 
 namespace Melon.Reports
@@ -15,7 +16,7 @@ namespace Melon.Reports
 
 		public Report Parse()
 		{
-			Report report = new Report();
+			var report = new Report();
 
 			Variable v;
 
@@ -24,9 +25,8 @@ namespace Melon.Reports
 				switch (reader.NodeType)
 				{
 					case XmlNodeType.Element:
-						//do the walk
-						string rr = reader.Name;
-						switch (rr)
+						
+						switch (reader.Name)
 						{
 							case "MelonReport":
 								report.Title = reader.GetAttribute("title");
@@ -44,14 +44,15 @@ namespace Melon.Reports
 								report.QueryString = reader.ReadString();
 								break;
 							case "Field":
-								Field field = new Field(reader.GetAttribute("name"));
-								field.Type = reader.GetAttribute("type");
+								var field = new Field(reader.GetAttribute("name")) {Type = reader.GetAttribute("type")};
 								report.AddField(field);
 								break;
 							case "Variable":
-								v = new Variable(reader.GetAttribute("name"));
-								v.Type = reader.GetAttribute("type");
-								v.Level = reader.GetAttribute("level");
+								v = new Variable(reader.GetAttribute("name"))
+								    	{
+								    		Type = reader.GetAttribute("type"),
+								    		Level = reader.GetAttribute("level")
+								    	};
 								if (v.Level.Equals(Variable.RESET_TYPE_GROUP))
 									v.ResetingGroup = reader.GetAttribute("group");
 								v.Formula = reader.GetAttribute("formula");
@@ -62,7 +63,7 @@ namespace Melon.Reports
 								report.AddParameter(new Parameter(reader.GetAttribute("name")));
 								break;
 							case "ReportFont":
-								Font f = new Font(reader.GetAttribute("name"), reader.GetAttribute("fontName"));
+								var f = new Font(reader.GetAttribute("name"), reader.GetAttribute("fontName"));
 								if (reader.MoveToAttribute("default"))
 									f.IsDefault = XmlConvert.ToBoolean(reader.GetAttribute("default"));
 								report.AddFont(f);
@@ -86,18 +87,19 @@ namespace Melon.Reports
 								report.Summary = ParseBands(reader, "Summary", report);
 								break;
 							case "Group": // the groups stuff
-								Group g = new Group(reader.GetAttribute("name"));
-								g.Invariant = reader.GetAttribute("invariant");
-								g.GroupHeader = ParseBands(reader, "groupHeader", report);
-								g.GroupFooter = ParseBands(reader, "groupFooter", report);
+								var g = new Group(reader.GetAttribute("name"))
+								        	{
+								        		Invariant = reader.GetAttribute("invariant"),
+								        		GroupHeader = ParseBands(reader, "groupHeader", report),
+								        		GroupFooter = ParseBands(reader, "groupFooter", report)
+								        	};
 
 								// the variable has to exist
 								if (report.VariableCollection[g.Invariant] == null)
 								{
 									throw new Exception("Unknown variable : " + g.Invariant);
 								}
-								;
-
+								
 								// has to do the wiring to all variables with this group as reseter
 								foreach (Variable var in report.VariableCollection.Values)
 								{
@@ -117,58 +119,57 @@ namespace Melon.Reports
 			return report;
 		}
 
-		private BandCollection ParseBands(XmlReader reader, string endTag, Report report)
+		private static BandCollection ParseBands(XmlReader reader, string endTag, Report report)
 		{
-			BandCollection bands = new BandCollection();
+			var bands = new BandCollection();
+
 			while (reader.Read()) //make sure this loop ends
 			{
 				if (reader.Name.Equals(endTag) && (reader.NodeType == XmlNodeType.EndElement))
 					break;
 				if (reader.Name == "Band" && reader.NodeType == XmlNodeType.Element)
 				{
-					Band band = new Band(XmlConvert.ToInt16(reader.GetAttribute("height")));
-					band.parent = report;
+					var band = new Band(XmlConvert.ToInt16(reader.GetAttribute("height"))) {parent = report};
 					bands.AddBand(band);
 					//parse Band content
 					ParseBand(reader, band, report);
 				}
 			}
+
 			return bands;
 		}
 
-		private void ParseBand(XmlReader reader, Band band, Report report)
+		private static void ParseBand(XmlReader reader, Band band, Report report)
 		{
-			int x, y, fontSize, height, width;
 			while (reader.Read())
 			{
 				if (reader.Name.Equals("Band") && (reader.NodeType == XmlNodeType.EndElement)) break;
 				switch (reader.NodeType)
 				{
 					case XmlNodeType.Element:
+						int x;
+						int y;
+						int fontSize;
+						int height;
+						int width;
 						switch (reader.Name)
 						{
 							case "StaticText":
 								x = XmlConvert.ToInt16(reader.GetAttribute("x"));
 								y = XmlConvert.ToInt16(reader.GetAttribute("y"));
 								fontSize = XmlConvert.ToInt16(reader.GetAttribute("font-size"));
-								string color = reader.GetAttribute("color");
-								string content = reader.ReadString();
-								Text t = new Text(content, Text.Alignment.Left, x, y);
-								t.FontSize = fontSize;
-								t.color = new Color(color);
-								band.AddElement(t);
+								var color = reader.GetAttribute("color");
+								var content = reader.ReadString();
+								var t = new Text(content, Text.Alignment.Left, x, y) {FontSize = fontSize, color = new Color(color)};
+								band.Elements.Add(t);
 								break;
 							case "Expression":
 								x = XmlConvert.ToInt16(reader.GetAttribute("x"));
 								y = XmlConvert.ToInt16(reader.GetAttribute("y"));
 								fontSize = XmlConvert.ToInt16(reader.GetAttribute("font-size"));
-								string strtype = reader.GetAttribute("type");
-								Expression e = new Expression(reader.ReadString());
-								e.X = x;
-								e.Y = y;
-								e.FontSize = fontSize;
-								e.Type = strtype;
-								band.AddElement(e);
+								var strtype = reader.GetAttribute("type");
+								var e = new Expression(reader.ReadString()) {X = x, Y = y, FontSize = fontSize, Type = strtype};
+								band.Elements.Add(e);
 								band.parent.ExpressionCollection.Add(e.GetHashCode(), e);
 								break;
 							case "Image":
@@ -176,7 +177,7 @@ namespace Melon.Reports
 								y = XmlConvert.ToInt16(reader.GetAttribute("y"));
 								height = XmlConvert.ToInt16(reader.GetAttribute("height"));
 								width = XmlConvert.ToInt16(reader.GetAttribute("width"));
-								string url = reader.GetAttribute("href");
+								var url = reader.GetAttribute("href");
 
 								//fix the path to image
 								/*if (!Path.IsPathRooted(url))
@@ -185,25 +186,20 @@ namespace Melon.Reports
 								}*/
 
 								//check if it is already in
-								Image i = (Image) report.ImageCollection[url];
+								var i = (Image) report.ImageCollection[url];
 								if (i == null) // NOTE : i don't like this way 
 								{
-									i = new Image(url, x, y);
-									i.width = width;
-									i.height = height;
+									i = new Image(url, x, y) {width = width, height = height};
 									report.ImageCollection.Add(url, i); //Add to global image array
 									i.IName = new ImageName();
-									band.AddElement(i);
+									band.Elements.Add(i);
 								}
 								else
 								{
-									Image i2 = new Image(url, x, y);
-									i2.width = width;
-									i2.height = height;
+									var i2 = new Image(url, x, y) {width = width, height = height, IName = i.IName};
 									//pon el nombre apuntando a la misma referencia
 									// la idea es que estas imagenes comparten el mismo nombre, capice?
-									i2.IName = i.IName;
-									band.AddElement(i2);
+									band.Elements.Add(i2);
 								}
 
 								break;
@@ -212,22 +208,26 @@ namespace Melon.Reports
 								y = XmlConvert.ToInt16(reader.GetAttribute("y"));
 								height = XmlConvert.ToInt16(reader.GetAttribute("height"));
 								width = XmlConvert.ToInt16(reader.GetAttribute("width"));
-								string bordercolor = reader.GetAttribute("bordercolor");
-								string fillcolor = reader.GetAttribute("fillcolor");
-								Rectangle r = new Rectangle();
-								r.x = x;
-								r.y = y;
-								r.width = width;
-								r.height = height;
-								r.bordercolor = new Color(bordercolor);
-								r.fillcolor = new Color(fillcolor);
-								band.AddElement(r);
+
+								var bordercolor = reader.GetAttribute("bordercolor");
+								var fillcolor = reader.GetAttribute("fillcolor");
+
+								var r = new Rectangle
+								              	{
+								              		x = x,
+								              		y = y,
+								              		width = width,
+								              		height = height,
+								              		bordercolor = new Color(bordercolor),
+								              		fillcolor = new Color(fillcolor)
+								              	};
+								band.Elements.Add(r);
 								break;
 							case "Bookmark":
-								string var = reader.GetAttribute("var");
-								string id = reader.GetAttribute("id"); //TODO :  termina esto
-								Bookmark b = new Bookmark(var);
-								band.AddElement(b);
+								var var = reader.GetAttribute("var");
+								var id = reader.GetAttribute("id"); //TODO :  termina esto
+								var b = new Bookmark(var);
+								band.Elements.Add(b);
 								break;
 						}
 						break;

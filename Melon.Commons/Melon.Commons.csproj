@@ -1,19 +1,17 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{B27D80C5-FEF9-4565-B4AC-12EBBA1CECD6}</ProjectGuid>
+    <ProjectGuid>{E2AA4624-838D-458F-9192-757F6BB206D6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Melon.Printer</RootNamespace>
-    <AssemblyName>Melon.Printer</AssemblyName>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <OldToolsVersion>2.0</OldToolsVersion>
+    <RootNamespace>Melon.Commons</RootNamespace>
+    <AssemblyName>Melon.Commons</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -34,32 +32,24 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbstractDriver.cs" />
-    <Compile Include="HTMLDriver.cs" />
-    <Compile Include="PdfDriver.cs" />
-    <Compile Include="PdfStreamAdapter.cs" />
-    <Compile Include="PrintManager.cs" />
+    <Compile Include="Color.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Melon.Commons\Melon.Commons.csproj">
-      <Project>{E2AA4624-838D-458F-9192-757F6BB206D6}</Project>
-      <Name>Melon.Commons</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Melon.Pdf\Melon.Pdf.csproj">
-      <Project>{958E134C-DBF6-485F-B3B0-E83849B09B5D}</Project>
-      <Name>Melon.Pdf</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Melon.Reports\Melon.Reports.csproj">
-      <Project>{7F7020AE-98ED-4AA8-9730-71FF7E23D3D5}</Project>
-      <Name>Melon.Reports</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

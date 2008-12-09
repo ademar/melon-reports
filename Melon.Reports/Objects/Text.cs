@@ -1,3 +1,5 @@
+using Melon.Commons;
+
 namespace Melon.Reports.Objects
 {
 	/// <summary>

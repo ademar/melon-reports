@@ -5,7 +5,7 @@ using Melon.Reports.Objects;
 
 namespace Melon.Printer
 {
-	public class PDFDriver : AbstractDriver
+	public class PdfDriver : AbstractDriver
 	{
 		private PdfPage currentPage;
 
@@ -17,7 +17,7 @@ namespace Melon.Printer
 
 			foreach (Font font in document.Fonts)
 			{
-				pdf.MakeFont(font.Name, PdfFontTypes.TYPE1, font.FontName);
+				pdf.AddFont(font.Name, PdfFontTypes.TYPE1, font.FontName);
 				if (font.IsDefault) defaultFont = font.Name;
 			}
 
@@ -32,9 +32,7 @@ namespace Melon.Printer
 				PrintPage(page, pdf);
 			}
 
-			pdf.outputHeader(printStream);
-			var offset = pdf.outputXref(printStream);
-			pdf.outputTrailer(printStream, offset);
+			pdf.Print(printStream);
 
 			printStream.Flush();
 		}
@@ -42,13 +40,11 @@ namespace Melon.Printer
 
 		public void PrintPage(Page page, PdfDocument pdf)
 		{
-			var currentPDFStream = pdf.MakeStream();
-
-			currentPage = pdf.MakePage(currentPDFStream, page.Width, page.Height);
+			currentPage = pdf.CreatePage(page.Width, page.Height);
 
 			foreach (BasicElement be in page.Elements)
 			{
-				PrintElement(be, pdf, currentPDFStream);
+				PrintElement(be, pdf, currentPage.Content);
 			}
 		}
 
@@ -56,7 +52,7 @@ namespace Melon.Printer
 		{
 			var type = element.GetType();
 
-			var adapter = new PDFStreamAdapter(pdfStream, defaultFont);
+			var adapter = new PdfStreamAdapter(pdfStream, defaultFont);
 
 			if (type == typeof (Text))
 			{
@@ -83,55 +79,6 @@ namespace Melon.Printer
 		public void PrintBookmark(Bookmark b, PdfDocument pdf)
 		{
 			pdf.MakeOutline(pdf.OutlineRoot, b.VarName, currentPage);
-		}
-	}
-
-	public class PDFStreamAdapter
-	{
-		private readonly PdfStream pdfStream;
-		private readonly string defaultFont;
-
-		public PDFStreamAdapter(PdfStream pdfStream, string defaultFont)
-		{
-			this.pdfStream = pdfStream;
-			this.defaultFont = defaultFont;
-		}
-
-		public void PrintImage(Image image)
-		{
-			pdfStream.SaveState();
-			pdfStream.ShowImage(image.IName.Name, image.x, (image.H - image.y - image.height), image.width, image.height);
-			pdfStream.RestoreState();
-		}
-
-		public void PrintText(Text text)
-		{
-			pdfStream.SaveState();
-			pdfStream.SetRGBColorFill(text.color.Red, text.color.Green, text.color.Blue);
-			pdfStream.BeginText();
-			pdfStream.SetFont(defaultFont, text.FontSize);
-			pdfStream.SetTextPos(text.X, (text.H - text.Y));
-			pdfStream.ShowText(text.Label);
-			pdfStream.EndText();
-			pdfStream.RestoreState();
-		}
-
-		public void PrintExpression(Expression e)
-		{
-			pdfStream.BeginText();
-			pdfStream.SetFont(defaultFont, e.FontSize);
-			pdfStream.SetTextPos(e.X, (e.H - e.Y));
-			pdfStream.ShowText(e.Value.ToString());
-			pdfStream.EndText();
-		}
-
-		public void PrintRectangle(Rectangle r)
-		{
-			pdfStream.SaveState();
-			pdfStream.SetRGBColorFill(r.fillcolor.Red, r.fillcolor.Green, r.fillcolor.Blue);
-			pdfStream.SetRGBColorStroke(r.bordercolor.Red, r.bordercolor.Green, r.bordercolor.Blue);
-			pdfStream.ShowRectangle(r.x, r.H - r.y - r.height, r.width, r.height);
-			pdfStream.RestoreState();
 		}
 	}
 }

@@ -1,6 +1,6 @@
 // created on 3/13/2002 at 6:56 PM
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -11,18 +11,18 @@ namespace Melon.Pdf.Objects
 	{
 		protected MemoryStream streamdata = new MemoryStream();
 
-		protected ArrayList filters;
+		protected IList<Filter> filters = new List<Filter>();
 
 		public static readonly int DefaultEncoding = 1252;
 
 		public PdfStream(int number) : base(number)
 		{
-			filters = new ArrayList();
+			
 		}
 
 		public void AddData(string s)
 		{
-			byte[] databytes = (new ASCIIEncoding()).GetBytes(s);
+			var databytes = (new ASCIIEncoding()).GetBytes(s);
 			streamdata.Write(databytes, 0, databytes.Length);
 		}
 
@@ -65,15 +65,13 @@ namespace Melon.Pdf.Objects
 
 		public override int Output(Stream stream)
 		{
-			int marker;
+			var filterEntry = ApplyFilters();
 
-			string filterEntry = ApplyFilters();
-
-			string s = string.Format("{0} {1} obj\n<< /Length {2} {3} >>\n", Number, Generation, (streamdata.Length), filterEntry);
-			ASCIIEncoding encoder = new ASCIIEncoding();
-			byte[] byteholder = encoder.GetBytes(s);
+			var s = string.Format(CultureInfo.InvariantCulture,"{0} {1} obj\n<< /Length {2} {3} >>\n", Number, Generation, (streamdata.Length), filterEntry);
+			var encoder = new ASCIIEncoding();
+			var byteholder = encoder.GetBytes(s);
 			stream.Write(byteholder, 0, byteholder.Length);
-			marker = byteholder.Length;
+			var marker = byteholder.Length;
 
 			//the pdf stream 
 			marker += outputPDFStream(stream);
@@ -87,11 +85,11 @@ namespace Melon.Pdf.Objects
 		{
 			var encoder = new ASCIIEncoding();
 
-			byte[] b = encoder.GetBytes("stream\n");
+			var b = encoder.GetBytes("stream\n");
 			stream.Write(b, 0, b.Length);
 			stream.Flush();
 
-			int marker = b.Length;
+			var marker = b.Length;
 			marker += (int) streamdata.Length;
 			streamdata.WriteTo(stream);
 			b = encoder.GetBytes("\nendstream\n");
@@ -104,50 +102,49 @@ namespace Melon.Pdf.Objects
 
 		public string ApplyFilters()
 		{
-			ArrayList names = new ArrayList();
-			ArrayList parms = new ArrayList();
+			var parms = new List<string>();
+
 			if (filters.Count > 0)
 			{
-				IEnumerator it = filters.GetEnumerator();
-				while (it.MoveNext())
+				var filternames = "/Filter [ ";
+
+				foreach (var filter in filters)
 				{
-					Filter f = (Filter) it.Current;
-					byte[] tmp = f.Encode(streamdata.ToArray());
-					streamdata.SetLength(0); //reset ??
+					var tmp = filter.Encode(streamdata.ToArray());
+					streamdata.SetLength(0);
 					streamdata.Write(tmp, 0, tmp.Length);
 					streamdata.Flush();
-					names.Add(f.Name); //no decode parms so far
-					if (f.DecodeParameters != null) parms.Add(f.DecodeParameters);
+					
+
+					if (filter.DecodeParameters != null)
+					{
+						parms.Add(filter.DecodeParameters);
+					}
+
+					filternames = string.Format(CultureInfo.InvariantCulture,"{0}{1} ", filternames, filter.Name);
 				}
-				//build the filters entry
-				string filternames = "/Filter [ ";
-				it = names.GetEnumerator();
-				while (it.MoveNext())
-				{
-					filternames = string.Format("{0}{1} ", filternames, it.Current);
-				}
+				
 				filternames += "]\n";
 
-				//build the parameters string
-				bool aflag = false;
-				string decodeparms = "/DecodeParms [ ";
-				it = parms.GetEnumerator();
-				while (it.MoveNext())
-				{
-					string s = it.Current.ToString();
-					if (s != null)
-					{
-						aflag = true;
-						decodeparms = decodeparms + s + " ";
-					}
-				}
-				decodeparms += "]\n";
+				var decodeparms = string.Empty;
 
-				if (!aflag) decodeparms = "";
+				if (parms.Count > 0)
+				{
+                    decodeparms = "/DecodeParms [ ";
+
+					foreach (var parm in parms)
+					{
+						decodeparms = decodeparms + parm + " ";
+					}
+
+					decodeparms += "]\n";
+				}
 
 				return filternames + decodeparms;
 			}
-			return "";
+
+
+			return string.Empty;
 		}
 
 		public void BeginText()

@@ -1,4 +1,5 @@
 using System.Collections;
+using Melon.Commons;
 
 namespace Melon.Reports.Objects
 {
@@ -36,8 +37,8 @@ namespace Melon.Reports.Objects
 			var it = bands.Bands.GetEnumerator();
 			while (it.MoveNext())
 			{
-				PutBand((Band) it.Current, h);
-				h -= ((Band) it.Current).Height;
+				PutBand(it.Current, h);
+				h -= it.Current.Height;
 			}
 		}
 

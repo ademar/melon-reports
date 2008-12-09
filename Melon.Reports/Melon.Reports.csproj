@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{7F7020AE-98ED-4AA8-9730-71FF7E23D3D5}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -46,7 +46,6 @@
     <Compile Include="Objects\BasicElement.cs" />
     <Compile Include="Objects\Bookmark.cs" />
     <Compile Include="Calculator.cs" />
-    <Compile Include="Color.cs" />
     <Compile Include="Objects\Document.cs" />
     <Compile Include="Objects\Expression.cs" />
     <Compile Include="Objects\Field.cs" />
@@ -75,6 +74,12 @@
     <None Include="Schemas\melon-0.5.xsx">
       <DependentUpon>melon-0.5.xsd</DependentUpon>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Melon.Commons\Melon.Commons.csproj">
+      <Project>{E2AA4624-838D-458F-9192-757F6BB206D6}</Project>
+      <Name>Melon.Commons</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

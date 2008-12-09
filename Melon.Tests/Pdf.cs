@@ -1,4 +1,5 @@
 using System.IO;
+using Melon.Commons;
 using Melon.Pdf.Imaging;
 using Melon.Pdf.Objects;
 using NUnit.Framework;
@@ -13,34 +14,20 @@ namespace Melon.Tests
 		{
 			var pdf = new PdfDocument();
 
-			pdf.MakeFont("F1", PdfFontTypes.TYPE1, "Helvetica");
+			pdf.AddFont("F1", PdfFontTypes.TYPE1, "Helvetica");
+            pdf.AddImage(AbstractImage.Make(@"C:\Temp\dotnet.gif"));
 
-			var img = AbstractImage.Make(@"C:\Temp\dotnet.gif");
-			pdf.AddImage(img);
+			var page = pdf.CreatePage( 612, 792);
 
-			var ps = pdf.MakeStream();
+			page.Text("a GIF image :",50,550,"F1",24, new Color());
+            page.Image("Im1", 250, 570, 61, 35);
 
-			ps.BeginText();
-			ps.SetFont("F1", 24);
-			ps.SetTextPos(50, 550);
-			ps.ShowText("a GIF image :");
-			ps.EndText();
+			pdf.MakeOutline(pdf.OutlineRoot, "root", page);
 
-			ps.ShowImage("Im1", 250, 550, 61, 35);
+			pdf.Print(new FileStream(@"C:\Temp\test.pdf", FileMode.Create, FileAccess.Write));
 
-			var p = pdf.MakePage(ps, 612, 792);
-
-			pdf.MakeOutline(pdf.OutlineRoot, "root", p);
-
-			var stream = new MemoryStream();
-
-			pdf.outputHeader(stream);
-			var offset = pdf.outputXref(stream);
-			pdf.outputTrailer(stream, offset);
-
-			var f = new FileStream(@"C:\Temp\test.pdf", FileMode.Create, FileAccess.Write);
-
-			stream.WriteTo(f);
+			
 		}
+
 	}
 }

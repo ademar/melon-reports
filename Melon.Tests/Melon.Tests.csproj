@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{1A3BA042-675A-4455-8911-43A9EB5DB497}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -51,6 +51,10 @@
     <Compile Include="Reporting.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Melon.Commons\Melon.Commons.csproj">
+      <Project>{E2AA4624-838D-458F-9192-757F6BB206D6}</Project>
+      <Name>Melon.Commons</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Melon.Pdf\Melon.Pdf.csproj">
       <Project>{958E134C-DBF6-485F-B3B0-E83849B09B5D}</Project>
       <Name>Melon.Pdf</Name>

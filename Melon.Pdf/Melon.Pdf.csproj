@@ -69,6 +69,12 @@
     <Compile Include="Objects\PdfStream.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Melon.Commons\Melon.Commons.csproj">
+      <Project>{E2AA4624-838D-458F-9192-757F6BB206D6}</Project>
+      <Name>Melon.Commons</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

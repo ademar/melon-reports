@@ -31,7 +31,7 @@ namespace Melon.Tests
 
 			generator.FillReport();
 
-			document = generator.Doc;
+			document = generator.Document;
 		}
 
 		[Test]
@@ -41,7 +41,7 @@ namespace Melon.Tests
 
 			var f = new FileStream("report.pdf", FileMode.Create, FileAccess.Write);
 
-			var driver = new PDFDriver();
+			var driver = new PdfDriver();
 
 			printer.Print(document, driver, f);
 

@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
 
-namespace Melon.Reports
+namespace Melon.Commons
 {
 	/// <summary>
 	/// Summary description for Color.

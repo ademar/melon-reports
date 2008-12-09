@@ -1,4 +1,4 @@
-using System.Collections;
+using System.Collections.Generic;
 
 namespace Melon.Reports.Objects
 {
@@ -9,16 +9,15 @@ namespace Melon.Reports.Objects
 	{
 		public BandCollection()
 		{
-			Bands = new ArrayList();
+			Bands = new List<Band>();
 		}
 
 		public void AddBand(Band band)
 		{
-			Bands.Add(band);
-			Height += band.Height;
+			Bands.Add(band); Height += band.Height;
 		}
 
-		public ArrayList Bands { get; private set; }
+		public IList<Band> Bands { get; private set; }
 
 		public int Height { get; private set; }
 	}
