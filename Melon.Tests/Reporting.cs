@@ -25,13 +25,11 @@ namespace Melon.Tests
 		[Test]
 		public void Generate()
 		{
-			IDbConnection cn = new MySqlConnection("Server=localhost;Database=world;User ID=user;Password=password;");
+			IDbConnection cn = new MySqlConnection("Server=localhost;Database=world;User ID=testuser;Password=password;");
 
 			var generator = new Generator(report) {Connection = cn};
 
-			generator.FillReport();
-
-			document = generator.Document;
+			document = generator.FillReport();
 		}
 
 		[Test]
@@ -39,7 +37,7 @@ namespace Melon.Tests
 		{
 			var printer = new PrintManager();
 
-			var f = new FileStream("report.pdf", FileMode.Create, FileAccess.Write);
+			var f = new FileStream(@"C:\Temp\report.pdf", FileMode.Create, FileAccess.Write);
 
 			var driver = new PdfDriver();
 

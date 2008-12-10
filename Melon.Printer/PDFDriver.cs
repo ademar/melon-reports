@@ -17,9 +17,12 @@ namespace Melon.Printer
 
 			foreach (Font font in document.Fonts)
 			{
-				
-				var pdfFont = pdf.CreateFont(/*font.Name, */PdfFontTypes.TYPE1, font.FontName);
-				if (font.IsDefault) defaultFont = pdfFont.FontName;
+				var pdfFont = pdf.CreateFont(PdfFontTypes.TYPE1, font.FontName);
+
+				if (font.IsDefault)
+				{
+					defaultFont = pdfFont.FontName;
+				}
 			}
 
 			foreach (Image image in document.Images)

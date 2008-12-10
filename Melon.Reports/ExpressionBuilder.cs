@@ -113,7 +113,7 @@ namespace Melon.Reports
 			ExpressionCalculatorClass.Members.Add(EvaluateVariableExpressionMethod);
 
 			EvaluateVariableExpressionMethod.Attributes = MemberAttributes.Public | MemberAttributes.Override;
-			;
+			
 			EvaluateVariableExpressionMethod.Name = "EvaluateVariableExpression";
 
 
@@ -205,38 +205,36 @@ namespace Melon.Reports
 				throw new ApplicationException(".NET implementation is broken.");
 			}
 
-			Type test = compresult.CompiledAssembly.GetType("Melon.Parser.ExpressionCalculator");
+			var test = compresult.CompiledAssembly.GetType("Melon.Reports.ExpressionCalculator");
 
-			this.compiledExpressions = o;
-			this.compiledType = test;
+			compiledExpressions = o;
+			compiledType = test;
 		}
 
 		public object EvaluateVariable(string variableName)
 		{
-			PropertyInfo p = compiledType.GetProperty(variableName);
-			object o = p.GetValue(compiledExpressions, null);
+			var p = compiledType.GetProperty(variableName);
+			var o = p.GetValue(compiledExpressions, null);
 			return o;
 		}
 
 		public void SetVariable(string variableName, object val)
 		{
-			PropertyInfo p = compiledType.GetProperty(variableName);
+			var p = compiledType.GetProperty(variableName);
 			p.SetValue(compiledExpressions, val, null);
 		}
 
 		public object EvaluateExpression(int i)
 		{
-			MethodInfo m = compiledType.GetMethod("EvaluateExpression");
-			object[] arg = new object[1];
+			var m = compiledType.GetMethod("EvaluateExpression");
+			var arg = new object[1];
 			arg[0] = i;
 			return m.Invoke(compiledExpressions, arg);
 		}
 
 		public void SetField(string fieldName, object val)
 		{
-			Console.WriteLine("fieldName: " + fieldName);
-
-			FieldInfo f = compiledType.GetField(fieldName);
+			var f = compiledType.GetField(fieldName);
 
 			f.SetValue(compiledExpressions, val);
 		}

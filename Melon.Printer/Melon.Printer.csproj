@@ -39,7 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractDriver.cs" />
-    <Compile Include="HTMLDriver.cs" />
+    <Compile Include="HtmlDriver.cs" />
     <Compile Include="PdfDriver.cs" />
     <Compile Include="PdfStreamAdapter.cs" />
     <Compile Include="PrintManager.cs" />

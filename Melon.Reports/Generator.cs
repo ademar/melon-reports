@@ -21,13 +21,18 @@ namespace Melon.Reports
 			calculator = new Calculator(expressionBuilder);
 		}
 
-		public void FillReport()
+		public Document FillReport()
+		{
+			return BuildDocument();
+		}
+
+		private Document BuildDocument()
 		{
 			expressionBuilder.BuildExpressions(report);
 
-			Document = new Document {Fonts = report.Fonts, Images = new Image[report.ImageCollection.Count]};
+			var document = new Document {Fonts = report.Fonts, Images = new Image[report.ImageCollection.Count]};
 
-			report.ImageCollection.Values.CopyTo(Document.Images, 0);
+			report.ImageCollection.Values.CopyTo(document.Images, 0);
 
 			var com = Connection.CreateCommand();
 			com.CommandText = report.QueryString;
@@ -38,7 +43,7 @@ namespace Melon.Reports
 
 			h = report.Height - report.TopMargin;
 
-			var page = Document.AddPage();
+			var page = document.AddPage();
 			page.Height = report.Height;
 			page.Width = report.Width;
 
@@ -108,7 +113,7 @@ namespace Melon.Reports
 					if (h < (report.BottonMargin + report.PageFooter.Height))
 					{
 						page.PutBands(report.PageFooter, ref h);
-						page = Document.AddPage();
+						page = document.AddPage();
 						page.Height = report.Height;
 						page.Width = report.Width;
 						h = report.Height - report.TopMargin; //reset h
@@ -122,9 +127,9 @@ namespace Melon.Reports
 				}
 			}
 			page.PutBands(report.PageFooter, ref h); //one last footer
-		}
 
-		public Document Document { get; private set; }
+			return document;
+		}
 
 		public IDbConnection Connection { get; set; }
 	}
