@@ -7,14 +7,14 @@ namespace Melon.Reports
 	public class Generator
 	{
 		private readonly Report report;
-		private int h;
 		private readonly Calculator calculator;
+
+		private int h;
 
 		public Generator(Report report)
 		{
-			this.report = report;
-
-			calculator = new Calculator(report);
+			this.report = report; 
+			calculator = new Calculator(new ExpressionBuilder(report.Fields, report.Variables, report.Expressions));
 		}
 
 		public Document FillReport()
@@ -36,18 +36,12 @@ namespace Melon.Reports
 
 			report.ImageCollection.Values.CopyTo(document.Images, 0);
 
-			h = report.Height - report.TopMargin;
-
-			var page = document.CreatePage();
-			page.PutBands(report.PageHeader, ref h);
+			var page = openPage(document);
 
 			var RECORD_COUNT = 0;
 			var PAGE_NUMBER = 1;
 
 			calculator.SetField("PageNumber", PAGE_NUMBER);
-
-			var reversedGroups = (ArrayList) report.Groups.Clone();
-			reversedGroups.Reverse();
 
 			var dataReader = GetDataReader();
 
@@ -59,32 +53,22 @@ namespace Melon.Reports
 				calculator.EvaluateExpressions(report.Expressions);
 				calculator.SetField("GlobalRecordCount", RECORD_COUNT);
 
-				appendGroupFooters(page, reversedGroups);
+				appendGroupFooters(page, report.Groups);
                 appendGroupHeaders(page);
                 
 				foreach (var band in report.Detail.Bands)
 				{
-					// page break
-					if (h < (report.BottonMargin + report.PageFooter.Height))
+					if (pageBreak())
 					{
 						appendPageFooter(page);
 
-						page = document.CreatePage();
+						page = openPage(document);
 
-						//reset h
-						h = report.Height - report.TopMargin; 
-
-						appendPageHeader(page);
-
-						PAGE_NUMBER ++;
-
-						calculator.SetField("PageNumber", PAGE_NUMBER);
+						calculator.SetField("PageNumber", PAGE_NUMBER++);
 
 					}
 
-					appendDetailBand(page, band);
-
-					h -= band.Height;
+                    appendBand(page, band);
 				}
 			}
 
@@ -93,19 +77,48 @@ namespace Melon.Reports
 			return document;
 		}
 
-		private void appendDetailBand(Page page, Band band)
+		private bool pageBreak()
+		{
+			return h < (report.BottonMargin + report.PageFooter.Height);
+		}
+
+		private Page openPage(Document document)
+		{
+			var page = document.CreatePage();
+
+			resetH(); 
+			appendPageHeader(page);
+
+			return page;
+		}
+
+		private void resetH()
+		{
+			h = report.Height - report.TopMargin;
+		}
+
+		private void appendBand(Page page, Band band)
 		{
 			page.PutBand(band, h);
+			h -= band.Height;
+		}
+
+		private void PutBands(Page page, BandCollection bands)
+		{
+			foreach (var band in bands.Bands)
+			{
+				appendBand(page, band);
+			}
 		}
 
 		private void appendPageHeader(Page page)
 		{
-			page.PutBands(report.PageHeader, ref h);
+			PutBands(page,report.PageHeader);
 		}
 
 		private void appendPageFooter(Page page)
 		{
-			page.PutBands(report.PageFooter, ref h);
+			PutBands(page,report.PageFooter);
 		}
 
 		private void appendGroupHeaders(Page page)
@@ -118,21 +131,25 @@ namespace Melon.Reports
 
 				g.OnGroupChange(new GroupChangeEventArgs(report));
 				g.Value = o;
-				page.PutBands(g.GroupHeader, ref h);
-				g.IsOpen = true;
+                g.IsOpen = true;
+
+				PutBands(page, g.GroupHeader);
 			}
 		}
 
-		private void appendGroupFooters(Page page, ArrayList reversedGroups)
+		private void appendGroupFooters(Page page, ArrayList groups)
 		{
+			var reversedGroups = (ArrayList)groups.Clone();
+			reversedGroups.Reverse();
+
 			foreach (Group g in reversedGroups)
 			{
 				var o = calculator.EvaluateVariable(g.Invariant);
 
 				if (Equals(o, g.Value) || !g.IsOpen) continue;
 
-				page.PutBands(g.GroupFooter, ref h);
 				g.IsOpen = false;
+				PutBands(page,g.GroupFooter);
 			}
 		}
 

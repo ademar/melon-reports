@@ -8,9 +8,9 @@ namespace Melon.Reports
 	{
 		private readonly ExpressionBuilder expressionBuilder;
 
-		public Calculator(Report report)
+		public Calculator(ExpressionBuilder expressionBuilder)
 		{
-			expressionBuilder = new ExpressionBuilder(report);
+			this.expressionBuilder = expressionBuilder;
 		}
 
 		public void Init()

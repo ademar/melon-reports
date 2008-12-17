@@ -7,9 +7,9 @@ namespace Melon.Reports
 	{
 		protected IDictionary<string, Variable> variables;
 
-		protected AbstractCalculator(Report report)
+		protected AbstractCalculator(IDictionary<string, Variable> variables)
 		{
-			variables = report.Variables;
+			this.variables = variables;
 		}
 
 		public object EvaluateVariable(Variable var)

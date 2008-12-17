@@ -3,9 +3,6 @@ using System.Globalization;
 
 namespace Melon.Commons
 {
-	/// <summary>
-	/// Summary description for Color.
-	/// </summary>
 	public class RgbColor
 	{
 		public RgbColor()

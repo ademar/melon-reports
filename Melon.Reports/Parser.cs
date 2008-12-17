@@ -43,28 +43,25 @@ namespace Melon.Reports
 								break;
 							case "Field":
 								var field = new Field(reader.GetAttribute("name")) {Type = reader.GetAttribute("type")};
-								report.AddField(field);
+								report.Fields.Add(field);
 								break;
 							case "Variable":
-								var v = new Variable(reader.GetAttribute("name"))
+								var variable = new Variable(reader.GetAttribute("name"))
 								             	{
 								             		Type = reader.GetAttribute("type"),
 								             		Level = reader.GetAttribute("level")
 								             	};
-								if (v.Level.Equals(Variable.RESET_TYPE_GROUP))
-									v.ResetingGroup = reader.GetAttribute("group");
-								v.Formula = reader.GetAttribute("formula");
-								v.Expression = reader.ReadString();
-								report.AddVariable(v);
-								break;
-							case "Parameter":
-								report.AddParameter(new Parameter(reader.GetAttribute("name")));
+								if (variable.Level.Equals(Variable.RESET_TYPE_GROUP))
+									variable.ResetingGroup = reader.GetAttribute("group");
+								variable.Formula = reader.GetAttribute("formula");
+								variable.Expression = reader.ReadString();
+								report.Variables.Add(variable.Name,variable);
 								break;
 							case "ReportFont":
 								var f = new Font(reader.GetAttribute("name"), reader.GetAttribute("fontName"));
 								if (reader.MoveToAttribute("default"))
 									f.IsDefault = XmlConvert.ToBoolean(reader.GetAttribute("default"));
-								report.AddFont(f);
+								report.Fonts.Add(f);
 								break;
 							case "Title":
 								report.PageTitle = ParseBands(reader, "Title", report);

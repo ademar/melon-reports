@@ -1,6 +1,7 @@
 using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -11,14 +12,19 @@ namespace Melon.Reports
 {
 	public class ExpressionBuilder
 	{
-		private readonly Report report;
-
+		
 		private object compiledExpressions;
 		private Type compiledType;
 
-		public ExpressionBuilder(Report report)
+		private readonly IList<Field> fields;
+		private readonly IDictionary<string,Variable> variables;
+		private readonly IList<Expression> expressions;
+
+		public ExpressionBuilder(IList<Field> fields, IDictionary<string, Variable> variables, IList<Expression> expressions)
 		{
-			this.report = report;
+			this.fields = fields;
+			this.expressions = expressions;
+			this.variables = variables;
 		}
 
 		public void CompileExpressions()
@@ -32,6 +38,7 @@ namespace Melon.Reports
 
 			var namespc = new CodeNamespace("Melon.Reports");
 			namespc.Imports.Add(new CodeNamespaceImport("System"));
+			namespc.Imports.Add(new CodeNamespaceImport("System.Collections.Generic"));
 			namespc.Imports.Add(new CodeNamespaceImport("Melon.Reports.Objects"));
 
 
@@ -46,7 +53,7 @@ namespace Melon.Reports
 			ExpressionCalculatorClass.BaseTypes.Add("Melon.Reports.AbstractCalculator");
             ExpressionCalculatorClass.Members.Add(createConstructor());
 
-			foreach (var field in report.Fields)
+			foreach (var field in fields)
 			{
 				var f = new CodeMemberField(field.Type, field.Name) { Attributes = MemberAttributes.Public };
 				ExpressionCalculatorClass.Members.Add(f);
@@ -65,7 +72,7 @@ namespace Melon.Reports
 
 			var dynaCode = new StringBuilder("Object o = null; \n		switch(i){\n");
 
-			foreach (var variable in report.Variables.Values)
+			foreach (var variable in variables.Values)
 			{
 				dynaCode.Append(Case(variable));
                 ExpressionCalculatorClass.Members.Add(createProperty(variable));
@@ -91,10 +98,10 @@ namespace Melon.Reports
             
 			dynaCode = new StringBuilder("Object o = null; \n		switch(i){\n");
             
-			foreach (var ex in report.Expressions)
+			foreach (var ex in expressions)
 			{
 				dynaCode.Append("		case " + ex.GetHashCode() + ":\n" +
-								"			o = (" + ex.Type + ")" + ex.Content + ";\n" +
+								"			o = " + ex.Content + ";\n" +
 								"			break;\n");
 			}
 			dynaCode.Append("		}\n		return o");
@@ -138,7 +145,7 @@ namespace Melon.Reports
 			}
 
 			object o = compresult.CompiledAssembly.CreateInstance("Melon.Reports.ExpressionCalculator",
-			                                                      true, BindingFlags.CreateInstance, null, new object[] {report},
+			                                                      true, BindingFlags.CreateInstance, null, new object[] {variables},
 			                                                      null, null);
 
 			Console.WriteLine(compresult.CompiledAssembly.Location);
@@ -154,11 +161,11 @@ namespace Melon.Reports
 			compiledType = test;
 		}
 
-		private CodeConstructor createConstructor()
+		private static CodeConstructor createConstructor()
 		{
 			var theConstructor = new CodeConstructor {Attributes = MemberAttributes.Public};
-			theConstructor.Parameters.Add(new CodeParameterDeclarationExpression("Report", "report"));
-			theConstructor.BaseConstructorArgs.Add(new CodeVariableReferenceExpression("report"));
+			theConstructor.Parameters.Add(new CodeParameterDeclarationExpression("IDictionary<string,Variable>", "variables"));
+			theConstructor.BaseConstructorArgs.Add(new CodeVariableReferenceExpression("variables"));
 			return theConstructor;
 		}
 
@@ -199,7 +206,7 @@ namespace Melon.Reports
 		private static string Case(Variable variable)
 		{
 			return "		case " + variable.GetHashCode() + ":\n" +
-			       "		o = (" + variable.Type + ")" + variable.Expression.Trim() + ";\n" +
+			       "		o = " + variable.Expression.Trim() + ";\n" +
 			       "		break;\n";
 		}
 

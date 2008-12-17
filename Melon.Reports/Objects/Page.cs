@@ -18,8 +18,7 @@ namespace Melon.Reports.Objects
 
 		public void AddElement(BasicElement e, int h)
 		{
-			e.H = h;
-			Elements.Add(e);
+			e.H = h; Elements.Add(e);
 		}
 
 		public IList<BasicElement> Elements { get; private set; }
@@ -27,14 +26,7 @@ namespace Melon.Reports.Objects
 		public int Height { get; set; }
         public int Width { get; set; }
 
-		public void PutBands(BandCollection bands, ref int h)
-		{
-			foreach (var band in bands.Bands)
-			{
-				PutBand(band, h);
-				h -= band.Height;
-			}
-		}
+		
 
 		public void PutBand(Band band, int h)
 		{
