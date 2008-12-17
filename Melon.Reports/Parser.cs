@@ -18,9 +18,7 @@ namespace Melon.Reports
 		{
 			var report = new Report();
 
-			Variable v;
-
-			while (reader.Read()) // forward parsing
+			while (reader.Read()) 
 			{
 				switch (reader.NodeType)
 				{
@@ -48,11 +46,11 @@ namespace Melon.Reports
 								report.AddField(field);
 								break;
 							case "Variable":
-								v = new Variable(reader.GetAttribute("name"))
-								    	{
-								    		Type = reader.GetAttribute("type"),
-								    		Level = reader.GetAttribute("level")
-								    	};
+								var v = new Variable(reader.GetAttribute("name"))
+								             	{
+								             		Type = reader.GetAttribute("type"),
+								             		Level = reader.GetAttribute("level")
+								             	};
 								if (v.Level.Equals(Variable.RESET_TYPE_GROUP))
 									v.ResetingGroup = reader.GetAttribute("group");
 								v.Formula = reader.GetAttribute("formula");
@@ -86,7 +84,7 @@ namespace Melon.Reports
 							case "Summary":
 								report.Summary = ParseBands(reader, "Summary", report);
 								break;
-							case "Group": // the groups stuff
+							case "Group": 
 								var g = new Group(reader.GetAttribute("name"))
 								        	{
 								        		Invariant = reader.GetAttribute("invariant"),
@@ -94,14 +92,12 @@ namespace Melon.Reports
 								        		GroupFooter = ParseBands(reader, "groupFooter", report)
 								        	};
 
-								// the variable has to exist
-								if (report.VariableCollection[g.Invariant] == null)
+								if (report.Variables[g.Invariant] == null)
 								{
 									throw new Exception("Unknown variable : " + g.Invariant);
 								}
 								
-								// has to do the wiring to all variables with this group as reseter
-								foreach (Variable var in report.VariableCollection.Values)
+								foreach (var var in report.Variables.Values)
 								{
 									if (var.Level.Equals(Variable.RESET_TYPE_GROUP) && var.ResetingGroup.Equals(g.Name))
 									{
@@ -123,15 +119,14 @@ namespace Melon.Reports
 		{
 			var bands = new BandCollection();
 
-			while (reader.Read()) //make sure this loop ends
+			while (reader.Read()) 
 			{
 				if (reader.Name.Equals(endTag) && (reader.NodeType == XmlNodeType.EndElement))
 					break;
 				if (reader.Name == "Band" && reader.NodeType == XmlNodeType.Element)
 				{
 					var band = new Band(XmlConvert.ToInt16(reader.GetAttribute("height"))) {parent = report};
-					bands.AddBand(band);
-					//parse Band content
+					bands.Add(band);
 					ParseBand(reader, band, report);
 				}
 			}
@@ -160,7 +155,7 @@ namespace Melon.Reports
 								fontSize = XmlConvert.ToInt16(reader.GetAttribute("font-size"));
 								var color = reader.GetAttribute("color");
 								var content = reader.ReadString();
-								var t = new Text(content, Text.Alignment.Left, x, y) {FontSize = fontSize, rgbColor = new RgbColor(color)};
+								var t = new Text(content, TextAlignment.Left, x, y) {FontSize = fontSize, rgbColor = new RgbColor(color)};
 								band.Elements.Add(t);
 								break;
 							case "Expression":
@@ -170,7 +165,7 @@ namespace Melon.Reports
 								var strtype = reader.GetAttribute("type");
 								var e = new Expression(reader.ReadString()) {X = x, Y = y, FontSize = fontSize, Type = strtype};
 								band.Elements.Add(e);
-								band.parent.ExpressionCollection.Add(e.GetHashCode(), e);
+								band.parent.Expressions.Add(e);
 								break;
 							case "Image":
 								x = XmlConvert.ToInt16(reader.GetAttribute("x"));
@@ -178,30 +173,9 @@ namespace Melon.Reports
 								height = XmlConvert.ToInt16(reader.GetAttribute("height"));
 								width = XmlConvert.ToInt16(reader.GetAttribute("width"));
 								var url = reader.GetAttribute("href");
-
-								//fix the path to image
-								/*if (!Path.IsPathRooted(url))
-								{
-									url = Path.Combine(this.workDirectory,url);
-								}*/
-
-								//check if it is already in
-								var i = (Image) report.ImageCollection[url];
-								if (i == null) // NOTE : i don't like this way 
-								{
-									i = new Image(url, x, y) {width = width, height = height};
-									report.ImageCollection.Add(url, i); //Add to global image array
-									i.ImageName = new ImageName();
-									band.Elements.Add(i);
-								}
-								else
-								{
-									var i2 = new Image(url, x, y) {width = width, height = height, ImageName = i.ImageName};
-									//pon el nombre apuntando a la misma referencia
-									// la idea es que estas imagenes comparten el mismo nombre, capice?
-									band.Elements.Add(i2);
-								}
-
+                                var i = (Image) report.ImageCollection[url];
+								var i2 = new Image(url, x, y) {width = width, height = height, ImageName = i.ImageName};
+								band.Elements.Add(i2);
 								break;
 							case "Rectangle":
 								x = XmlConvert.ToInt16(reader.GetAttribute("x"));
@@ -225,7 +199,7 @@ namespace Melon.Reports
 								break;
 							case "Bookmark":
 								var var = reader.GetAttribute("var");
-								var id = reader.GetAttribute("id"); //TODO :  termina esto
+								var id = reader.GetAttribute("id"); 
 								var b = new Bookmark(var);
 								band.Elements.Add(b);
 								break;

@@ -14,6 +14,7 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>2.0</OldToolsVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -56,11 +57,11 @@
     <Compile Include="Objects\Image.cs" />
     <Compile Include="Objects\ImageName.cs" />
     <Compile Include="Objects\Page.cs" />
-    <Compile Include="Objects\PageCollection.cs" />
     <Compile Include="Objects\Parameter.cs" />
     <Compile Include="Objects\Rectangle.cs" />
     <Compile Include="Objects\Report.cs" />
     <Compile Include="Objects\Text.cs" />
+    <Compile Include="Objects\TextAlignment.cs" />
     <Compile Include="Objects\Variable.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="ReportReader.cs" />
@@ -71,6 +72,7 @@
       <SubType>
       </SubType>
     </EmbeddedResource>
+    <None Include="Objects\ClassDiagram1.cd" />
     <None Include="Schemas\melon-0.5.xsx">
       <DependentUpon>melon-0.5.xsd</DependentUpon>
     </None>

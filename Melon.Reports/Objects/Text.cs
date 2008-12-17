@@ -2,19 +2,8 @@ using Melon.Commons;
 
 namespace Melon.Reports.Objects
 {
-	/// <summary>
-	/// Summary description for Text.
-	/// </summary>
 	public class Text : BasicElement
 	{
-		public enum Alignment
-		{
-			Right,
-			Center,
-			Left,
-			Justified
-		}
-
 		public RgbColor rgbColor;
 
 		public Text()
@@ -26,7 +15,7 @@ namespace Melon.Reports.Objects
 			Label = text;
 		}
 
-		public Text(string text, Alignment align, int x, int y)
+		public Text(string text, TextAlignment align, int x, int y)
 		{
 			Label = text;
 			Align = align;
@@ -34,14 +23,10 @@ namespace Melon.Reports.Objects
 			Y = y;
 		}
 
-		public Alignment Align { get; set; }
-
-		public string Label { get; private set; }
-
-		public int X { get; private set; }
-
-		public int Y { get; private set; }
-
-		public int FontSize { get; set; }
+		public TextAlignment Align { get; set; }
+        public string Label { get; private set; }
+        public int X { get; private set; }
+        public int Y { get; private set; }
+        public int FontSize { get; set; }
 	}
 }

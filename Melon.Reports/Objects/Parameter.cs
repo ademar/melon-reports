@@ -2,9 +2,6 @@ using System;
 
 namespace Melon.Reports.Objects
 {
-	/// <summary>
-	/// Summary description for Parameter.
-	/// </summary>
 	public class Parameter
 	{
 		public Parameter()
@@ -17,9 +14,7 @@ namespace Melon.Reports.Objects
 		}
 
 		public string Name { set; get; }
-
-		public Type Type { set; get; }
-
-		public Object Value { get; set; }
+        public Type Type { set; get; }
+        public Object Value { get; set; }
 	}
 }

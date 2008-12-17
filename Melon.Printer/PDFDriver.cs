@@ -15,7 +15,7 @@ namespace Melon.Printer
 		{
 			var pdf = new PdfDocument();
 
-			foreach (Font font in document.Fonts)
+			foreach (var font in document.Fonts)
 			{
 				var pdfFont = pdf.CreateFont(PdfFontTypes.TYPE1, font.FontName);
 
@@ -34,7 +34,7 @@ namespace Melon.Printer
 				image.ImageName.Name = pdfImage.Name;
 			}
 
-			foreach (Page page in document.Pages)
+			foreach (var page in document.Pages)
 			{
 				PrintPage(page, pdf);
 			}
@@ -49,7 +49,7 @@ namespace Melon.Printer
 		{
 			currentPage = pdf.CreatePage(page.Width, page.Height);
 
-			foreach (BasicElement be in page.Elements)
+			foreach (var be in page.Elements)
 			{
 				PrintElement(be, pdf, currentPage.Content);
 			}

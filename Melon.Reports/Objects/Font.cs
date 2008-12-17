@@ -9,9 +9,7 @@ namespace Melon.Reports.Objects
 		}
 
 		public string Name { get; set; }
-
-		public string FontName { get; set; }
-
-		public bool IsDefault { get; set; }
+        public string FontName { get; set; }
+        public bool IsDefault { get; set; }
 	}
 }

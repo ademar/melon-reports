@@ -1,15 +1,15 @@
-using System.Collections;
+using System.Collections.Generic;
 using Melon.Reports.Objects;
 
 namespace Melon.Reports
 {
 	public abstract class AbstractCalculator
 	{
-		protected Hashtable variables;
+		protected IDictionary<string, Variable> variables;
 
 		protected AbstractCalculator(Report report)
 		{
-			variables = report.VariableCollection;
+			variables = report.Variables;
 		}
 
 		public object EvaluateVariable(Variable var)

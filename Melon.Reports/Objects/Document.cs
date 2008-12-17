@@ -1,28 +1,27 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
+
 
 namespace Melon.Reports.Objects
 {
 	public class Document
 	{
-		private readonly PageCollection pages = new PageCollection();
-
 		public Document()
 		{
-			Fonts = new ArrayList();
+			Pages = new List<Page>();
+			Fonts = new List<Font>();
 		}
 
-		public Document(int height, int width)
+		public Document(int height, int width):this()
 		{
-			Fonts = new ArrayList();
 			Height = height;
 			Width = width;
 		}
 
-		public Page AddPage()
+		public Page CreatePage()
 		{
 			var page = new Page(Height, Width);
-			pages.AddPage(page);
+			Pages.Add(page);
 			return page;
 		}
 
@@ -30,13 +29,10 @@ namespace Melon.Reports.Objects
 
 		public int Width { get; set; }
 
-		public ArrayList Fonts { get; set; }
+		public IList<Font> Fonts { get; set; }
 
 		public Array Images { get; set; }
 
-		public ArrayList Pages
-		{
-			get { return pages.Pages; }
-		}
+		public IList<Page> Pages { get; private set; }
 	}
 }

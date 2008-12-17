@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Melon.Reports.Objects.Band" Collapsed="true">
+    <Position X="15.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAABAAAAQAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Objects\Band.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Melon.Reports.Objects.BandCollection" Collapsed="true">
+    <Position X="17.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAEA=</HashCode>
+      <FileName>Objects\BandCollection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Melon.Reports.Objects.BasicElement" Collapsed="true">
+    <Position X="8.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAA=</HashCode>
+      <FileName>Objects\BasicElement.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Melon.Reports.Objects.Bookmark" Collapsed="true">
+    <Position X="10.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Objects\Bookmark.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Melon.Reports.Objects.Document" Collapsed="true">
+    <Position X="19" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAABAAAAAAgAAAAAEAAAAAAgBAAAAAAAAAAAAA=</HashCode>
+      <FileName>Objects\Document.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Melon.Reports.Objects.Expression" Collapsed="true">
+    <Position X="4" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAAAAAAgAAAAAAAAAAAQAgAAAAYAA=</HashCode>
+      <FileName>Objects\Expression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Melon.Reports.Objects.Field" Collapsed="true">
+    <Position X="20.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAQAgAAAAAAA=</HashCode>
+      <FileName>Objects\Field.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Melon.Reports.Objects.Font" Collapsed="true">
+    <Position X="15.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAQAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Objects\Font.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Melon.Reports.Objects.Group" Collapsed="true">
+    <Position X="17.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAgAAAAAAAAAAAgAAAAQAAQIAAAAAIAAggAAAAAA=</HashCode>
+      <FileName>Objects\Group.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Melon.Reports.Objects.GroupChangeEventArgs" Collapsed="true">
+    <Position X="19" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAA=</HashCode>
+      <FileName>Objects\GroupChangeEventHandler.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Melon.Reports.Objects.Image" Collapsed="true">
+    <Position X="6.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAQAAAAAAAAAAIBAAAAABgAAAAAAA=</HashCode>
+      <FileName>Objects\Image.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Melon.Reports.Objects.ImageName" Collapsed="true">
+    <Position X="20.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Objects\ImageName.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Melon.Reports.Objects.Page" Collapsed="true">
+    <Position X="15.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAJAAAAAAAQAEAAAAAAAQAAAAAAAAAAAAA=</HashCode>
+      <FileName>Objects\Page.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Melon.Reports.Objects.Parameter" Collapsed="true">
+    <Position X="19" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAQAgAAAAAAA=</HashCode>
+      <FileName>Objects\Parameter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Melon.Reports.Objects.Rectangle" Collapsed="true">
+    <Position X="8.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAAAQAQAAAAAACAAAAAAAAAABgAAAAAAA=</HashCode>
+      <FileName>Objects\Rectangle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Melon.Reports.Objects.Report" Collapsed="true">
+    <Position X="20.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABCABEAEBAAICEgIAACgAEADAQAgQAAAACgAABEAiAA=</HashCode>
+      <FileName>Objects\Report.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Melon.Reports.Objects.Text" Collapsed="true">
+    <Position X="13" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAAAAAAgAAAAAAAAAEAAQAAAAAYAA=</HashCode>
+      <FileName>Objects\Text.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Melon.Reports.Objects.Variable" Collapsed="true">
+    <Position X="15.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEEwBAAIAAAAAAAAAAAAAAQEAAAEBAFRAUBhAAACAAA=</HashCode>
+      <FileName>Objects\Variable.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Delegate Name="Melon.Reports.Objects.GroupChangeEventHandler" Collapsed="true">
+    <Position X="15.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Objects\GroupChangeEventHandler.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Font Name="Tahoma" Size="8.25" />
+</ClassDiagram>

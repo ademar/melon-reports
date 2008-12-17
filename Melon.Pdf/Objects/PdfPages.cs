@@ -26,13 +26,11 @@ namespace Melon.Pdf.Objects
 		{
 			var s = string.Format(CultureInfo.InvariantCulture, "{0} {1} obj\n<< /Type /Pages\n/Count {2}\n/Kids [", Number,Generation, Count);
 
-			var it = kids.GetEnumerator();
-
-			while (it.MoveNext())
+			foreach (var kid in kids)
 			{
-				s = string.Format("{0} {1}", s, it.Current);//BUG: 
+				s = string.Format("{0} {1}", s, kid);
 			}
-
+			
 			s = s + " ] >>\nendobj\n";
 
 			return s;

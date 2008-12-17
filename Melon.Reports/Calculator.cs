@@ -1,5 +1,4 @@
-using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Data;
 using Melon.Reports.Objects;
 
@@ -9,50 +8,42 @@ namespace Melon.Reports
 	{
 		private readonly ExpressionBuilder expressionBuilder;
 
-		public Calculator(ExpressionBuilder expressionBuilder)
+		public Calculator(Report report)
 		{
-			this.expressionBuilder = expressionBuilder;
+			expressionBuilder = new ExpressionBuilder(report);
 		}
 
-		public void EvaluateBand(Band band, Hashtable fields, Report report)
+		public void Init()
 		{
-			var it = band.Elements.GetEnumerator();
-			while (it.MoveNext())
-			{
-				var o = it.Current;
-				var type = o.GetType();
-				if (type == typeof (Expression))
-				{
-					var e = (Expression) o;
-					e.Value = expressionBuilder.EvaluateExpression(e.GetHashCode());
+			expressionBuilder.CompileExpressions();
+		}
 
-					//Field f = (Field)fields[e.fieldname];
-					//e.Value = (string)f.Value ;
-				}
+		public void EvaluateExpressions(ICollection<Expression> expressions)
+		{
+			foreach (var expression in expressions)
+			{
+				expression.Value = expressionBuilder.EvaluateExpression(expression.GetHashCode());
 			}
 		}
 
-		public void EvaluateExpressions(Report report)
+		public void UpdateFields(ICollection<Field> fields, IDataReader reader)
 		{
-			var it = report.ExpressionCollection.GetEnumerator();
-			while (it.MoveNext())
+			foreach (var f in fields)
 			{
-				var e = (Expression) it.Value;
-				e.Value = expressionBuilder.EvaluateExpression(e.GetHashCode());
-			}
-		}
-
-		public void UpdateFields(Hashtable fields, IDataReader reader, Report report)
-		{
-			IDictionaryEnumerator it = fields.GetEnumerator();
-			while (it.MoveNext())
-			{
-				Field f = (Field) it.Value;
-
-
-				Console.WriteLine(f.Name);
 				expressionBuilder.SetField(f.Name, reader[f.Name]);
 			}
 		}
+
+		public void SetField(string fieldName, object value)
+		{
+			expressionBuilder.SetField(fieldName, value);
+		}
+
+		public object EvaluateVariable(string variableName)
+		{
+			return expressionBuilder.EvaluateVariable(variableName);
+		}
+
+		
 	}
 }

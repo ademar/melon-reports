@@ -2,9 +2,6 @@ using System.Collections.Generic;
 
 namespace Melon.Reports.Objects
 {
-	/// <summary>
-	/// Summary description for BandCollection.
-	/// </summary>
 	public class BandCollection
 	{
 		public BandCollection()
@@ -12,7 +9,7 @@ namespace Melon.Reports.Objects
 			Bands = new List<Band>();
 		}
 
-		public void AddBand(Band band)
+		public void Add(Band band)
 		{
 			Bands.Add(band); Height += band.Height;
 		}

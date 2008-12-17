@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Melon.Reports.Objects
 {
@@ -7,35 +9,22 @@ namespace Melon.Reports.Objects
 		public Report()
 		{
 			ImageCollection = new Hashtable();
-			ExpressionCollection = new Hashtable();
+			Expressions = new Collection<Expression>();
 			ParameterCollection = new Hashtable();
-			VariableCollection = new Hashtable();
+			Variables = new Dictionary<string,Variable>();
 			Groups = new ArrayList();
-			Fields = new Hashtable();
+			Fields = new Collection<Field>();
 			Summary = new BandCollection();
 			PageFooter = new BandCollection();
 			Detail = new BandCollection();
 			PageHeader = new BandCollection();
 			ReportHeader = new BandCollection();
 			PageTitle = new BandCollection();
-			Fonts = new ArrayList();
+			Fonts = new List<Font>();
 		}
 
-		public Report(string title, int width, int height)
+		public Report(string title, int width, int height):this()
 		{
-			ImageCollection = new Hashtable();
-			ExpressionCollection = new Hashtable();
-			ParameterCollection = new Hashtable();
-			VariableCollection = new Hashtable();
-			Groups = new ArrayList();
-			Fields = new Hashtable();
-			Summary = new BandCollection();
-			PageFooter = new BandCollection();
-			Detail = new BandCollection();
-			PageHeader = new BandCollection();
-			ReportHeader = new BandCollection();
-			PageTitle = new BandCollection();
-			Fonts = new ArrayList();
 			Title = title;
 			Height = height;
 			Width = width;
@@ -43,22 +32,22 @@ namespace Melon.Reports.Objects
 
 		public void AddField(Field f)
 		{
-			Fields.Add(f.Name, f);
+			Fields.Add(f);
 		}
 
-		public void AddVariable(Variable v)
+		public void AddVariable(Variable variable)
 		{
-			VariableCollection.Add(v.Name, v);
+			Variables.Add(variable.Name,variable);
 		}
 
-		public void AddParameter(Parameter p)
+		public void AddParameter(Parameter parameter)
 		{
-			ParameterCollection.Add(p.Name, p);
+			ParameterCollection.Add(parameter.Name, parameter);
 		}
 
-		public void AddFont(Font f)
+		public void AddFont(Font font)
 		{
-			Fonts.Add(f);
+			Fonts.Add(font);
 		}
 
 		public string Title { get; set; }
@@ -75,7 +64,7 @@ namespace Melon.Reports.Objects
 
 		public int BottonMargin { get; set; }
 
-		public ArrayList Fonts { get; set; }
+		public IList<Font> Fonts { get; set; }
 
 		public string ConnectionString { get; set; }
 
@@ -93,16 +82,15 @@ namespace Melon.Reports.Objects
 
 		public BandCollection Summary { get; set; }
 
-		public Hashtable Fields { get; private set; }
+		public Collection<Field> Fields { get; private set; }
 
 		public ArrayList Groups { get; private set; }
 
-
-		public Hashtable VariableCollection { get; private set; }
+        public IDictionary<string,Variable> Variables { get; private set; }
 
 		public Hashtable ParameterCollection { get; private set; }
 
-		public Hashtable ExpressionCollection { get; private set; }
+		public Collection<Expression> Expressions { get; private set; }
 
 		public Hashtable ImageCollection { get; private set; }
 	}

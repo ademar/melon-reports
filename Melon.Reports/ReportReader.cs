@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Xml;
 using System.Xml.Schema;
 using Melon.Reports.Objects;
@@ -10,28 +9,29 @@ namespace Melon.Reports
 	{
 		public Report Load(string filename)
 		{
-			XmlSchemaSet xmlColl = new XmlSchemaSet();
+			var xmlColl = new XmlSchemaSet();
 
-			Stream sTest = typeof (Report).Assembly.GetManifestResourceStream("Melon.Reports.Schemas.melon-0.5.xsd");
+			var sTest = typeof (Report).Assembly.GetManifestResourceStream("Melon.Reports.Schemas.melon-0.5.xsd");
 
-			XmlTextReader schemaReader = new XmlTextReader(sTest);
+			if (sTest != null)
+			{
+				var schemaReader = new XmlTextReader(sTest);
 
-			xmlColl.Add("melon-0.5.xsd", schemaReader);
+				xmlColl.Add("melon-0.5.xsd", schemaReader);
+			}
 
-			XmlReaderSettings settings = new XmlReaderSettings();
-			settings.ValidationType = ValidationType.Schema;
-			settings.Schemas = xmlColl;
+			var settings = new XmlReaderSettings {ValidationType = ValidationType.Schema, Schemas = xmlColl};
 
-			settings.ValidationEventHandler += this.ValidationEventHandle;
+			settings.ValidationEventHandler += ValidationEventHandle;
 
 			/*settings.WhitespaceHandling = WhitespaceHandling.Significant;
 			settings.Normalization = true;*/
 
-			XmlReader reader = XmlReader.Create(filename, settings);
+			var reader = XmlReader.Create(filename, settings);
 
-			Parser parser = new Parser(reader);
+			var parser = new Parser(reader);
 
-			Report report = parser.Parse();
+			var report = parser.Parse();
 
 			reader.Close();
 

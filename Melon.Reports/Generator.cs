@@ -8,17 +8,13 @@ namespace Melon.Reports
 	{
 		private readonly Report report;
 		private int h;
-		private readonly ExpressionBuilder expressionBuilder;
 		private readonly Calculator calculator;
 
 		public Generator(Report report)
 		{
-			Connection = null;
 			this.report = report;
 
-			expressionBuilder = new ExpressionBuilder(report.Fields, report.VariableCollection, report.ExpressionCollection);
-
-			calculator = new Calculator(expressionBuilder);
+			calculator = new Calculator(report);
 		}
 
 		public Document FillReport()
@@ -28,107 +24,126 @@ namespace Melon.Reports
 
 		private Document BuildDocument()
 		{
-			expressionBuilder.BuildExpressions(report);
+			calculator.Init();
 
-			var document = new Document {Fonts = report.Fonts, Images = new Image[report.ImageCollection.Count]};
+			var document = new Document
+			               	{
+			               		Fonts = report.Fonts, 
+								Images = new Image[report.ImageCollection.Count],
+								Height = report.Height,
+								Width = report.Width
+			               	};
 
 			report.ImageCollection.Values.CopyTo(document.Images, 0);
 
-			var com = Connection.CreateCommand();
-			com.CommandText = report.QueryString;
-
-			Connection.Open();
-
-			var dataReader = com.ExecuteReader();
-
 			h = report.Height - report.TopMargin;
 
-			var page = document.AddPage();
-			page.Height = report.Height;
-			page.Width = report.Width;
-
-			// DOUBT : cuando se evaluan el header y el footer ;
-			// dos opciones : antes de evaluar la pagina o despues
-			// TODO : tengo que resolver el problema de las expresiones en el primer header
-
+			var page = document.CreatePage();
 			page.PutBands(report.PageHeader, ref h);
 
-			int RECORD_COUNT = 0;
-			int PAGE_NUMBER = 1;
+			var RECORD_COUNT = 0;
+			var PAGE_NUMBER = 1;
 
-			expressionBuilder.SetField("PageNumber", PAGE_NUMBER);
+			calculator.SetField("PageNumber", PAGE_NUMBER);
 
-			//a reversed copy of the group array
 			var reversedGroups = (ArrayList) report.Groups.Clone();
 			reversedGroups.Reverse();
+
+			var dataReader = GetDataReader();
 
 			while (dataReader.Read())
 			{
 				RECORD_COUNT++;
 
-				calculator.UpdateFields(report.Fields, dataReader, report);
-				//Evaluate Variables
+				calculator.UpdateFields(report.Fields, dataReader);
+				calculator.EvaluateExpressions(report.Expressions);
+				calculator.SetField("GlobalRecordCount", RECORD_COUNT);
 
-				expressionBuilder.SetField("GlobalRecordCount", RECORD_COUNT);
-
-				calculator.EvaluateExpressions(report);
-
-				//maybe it can be improved
-				//check groups -- close in reversed order
-				foreach (Group g in reversedGroups)
+				appendGroupFooters(page, reversedGroups);
+                appendGroupHeaders(page);
+                
+				foreach (var band in report.Detail.Bands)
 				{
-					var o = expressionBuilder.EvaluateVariable(g.Invariant);
-					if (!Equals(o, g.Value) && g.IsOpen)
-					{
-						page.PutBands(g.GroupFooter, ref h);
-						g.IsOpen = false;
-					}
-				}
-
-				foreach (Group g in report.Groups)
-				{
-					//get actual value of asociated variable
-					var o = expressionBuilder.EvaluateVariable(g.Invariant);
-					if (!Equals(o, g.Value))
-					{
-						g.OnGroupChange(new GroupChangeEventArgs(report));
-						g.Value = o;
-						g.Counter = 0;
-						page.PutBands(g.GroupHeader, ref h);
-						g.IsOpen = true;
-					}
-
-					g.Counter++;
-				}
-
-				// details
-
-				IEnumerator it = report.Detail.Bands.GetEnumerator(); //las bandas del detalle
-				while (it.MoveNext())
-				{
-					var band = (Band) it.Current;
-
-
-					// HACK : page break??
+					// page break
 					if (h < (report.BottonMargin + report.PageFooter.Height))
 					{
-						page.PutBands(report.PageFooter, ref h);
-						page = document.AddPage();
-						page.Height = report.Height;
-						page.Width = report.Width;
-						h = report.Height - report.TopMargin; //reset h
-						page.PutBands(report.PageHeader, ref h);
+						appendPageFooter(page);
+
+						page = document.CreatePage();
+
+						//reset h
+						h = report.Height - report.TopMargin; 
+
+						appendPageHeader(page);
+
 						PAGE_NUMBER ++;
-						expressionBuilder.SetField("PageNumber", PAGE_NUMBER);
+
+						calculator.SetField("PageNumber", PAGE_NUMBER);
+
 					}
 
-					page.PutBand(band, h);
+					appendDetailBand(page, band);
+
 					h -= band.Height;
 				}
 			}
-			page.PutBands(report.PageFooter, ref h); //one last footer
+
+			appendPageFooter(page);
 
 			return document;
+		}
+
+		private void appendDetailBand(Page page, Band band)
+		{
+			page.PutBand(band, h);
+		}
+
+		private void appendPageHeader(Page page)
+		{
+			page.PutBands(report.PageHeader, ref h);
+		}
+
+		private void appendPageFooter(Page page)
+		{
+			page.PutBands(report.PageFooter, ref h);
+		}
+
+		private void appendGroupHeaders(Page page)
+		{
+			foreach (Group g in report.Groups)
+			{
+				var o = calculator.EvaluateVariable(g.Invariant);
+
+				if (Equals(o, g.Value)) continue;
+
+				g.OnGroupChange(new GroupChangeEventArgs(report));
+				g.Value = o;
+				page.PutBands(g.GroupHeader, ref h);
+				g.IsOpen = true;
+			}
+		}
+
+		private void appendGroupFooters(Page page, ArrayList reversedGroups)
+		{
+			foreach (Group g in reversedGroups)
+			{
+				var o = calculator.EvaluateVariable(g.Invariant);
+
+				if (Equals(o, g.Value) || !g.IsOpen) continue;
+
+				page.PutBands(g.GroupFooter, ref h);
+				g.IsOpen = false;
+			}
+		}
+
+		private IDataReader GetDataReader()
+		{
+			var com = Connection.CreateCommand();
+			com.CommandText = report.QueryString;
+
+			Connection.Open();
+
+			return com.ExecuteReader();
 		}
 
 		public IDbConnection Connection { get; set; }

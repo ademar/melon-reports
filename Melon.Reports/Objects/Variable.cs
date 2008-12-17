@@ -1,17 +1,12 @@
 namespace Melon.Reports.Objects
 {
-	/// <summary>
-	/// Summary description for Variable.
-	/// </summary>
 	public class Variable
 	{
-		// levels of resetting
 		public static string RESET_TYPE_NONE = "none";
 		public static string RESET_TYPE_GROUP = "group";
 		public static string RESET_TYPE_REPORT = "report";
 		public static string RESET_TYPE_PAGE = "page";
 
-		// calculations
 		public static string CALCULATION_NONE = "none";
 		public static string CALCULATION_COUNT = "count";
 		public static string CALCULATION_SUM = "sum";
