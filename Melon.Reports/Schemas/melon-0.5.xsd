@@ -11,8 +11,8 @@
 	</xs:element>
 	<xs:complexType name="Report">
 		<xs:sequence>
-			<xs:element name="Connection" type="connectionString" />
-			<xs:element name="QueryString" type="xs:string" />
+			<xs:element name="Connection" type="connectionString" minOccurs="0" />
+			<xs:element name="QueryString" type="xs:string" minOccurs="0" />
 			<xs:element name="Field" type="parameter" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="Parameter" type="field" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="Variable" type="variable" minOccurs="0" maxOccurs="unbounded" />
@@ -22,9 +22,9 @@
 			<xs:element name="Title" type="bandContainer"/>
 			<xs:element name="ReportHeader" type="bandContainer"/>
 			-->
-			<xs:element name="PageHeader" type="bandContainer" />
+			<xs:element name="PageHeader" type="bandContainer"  minOccurs="0"/>
 			<xs:element name="Detail" type="bandContainer" />
-			<xs:element name="PageFooter" type="bandContainer" />
+			<xs:element name="PageFooter" type="bandContainer"  minOccurs="0"/>
 			<!--
 			<xs:element name="Summary" type="bandContainer"/>
 			-->
