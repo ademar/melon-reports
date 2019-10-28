@@ -17,12 +17,31 @@ namespace Melon.Reports
 			calculator = new Calculator(new ExpressionBuilder(report.Fields, report.Variables, report.Expressions));
 		}
 
-		public Document FillReport()
+        public Document FillReport()
+        {
+            var dataReader = GetDataReader();
+            return FillReport(dataReader);
+        }
+
+        public Document FillReport(IDataReader dataReader)
 		{
-			return BuildDocument();
+            
+            return BuildDocument(dataReader);
 		}
 
-		private Document BuildDocument()
+        public Document FillReport(IDataReaderAdapter dataReader)
+        {
+            return BuildDocument(dataReader);
+        }
+
+        private Document BuildDocument(IDataReader dataReader)
+        {
+            var readerAdapter = new DataReaderAdapter(dataReader);
+
+            return BuildDocument(readerAdapter);
+        }
+
+		private Document BuildDocument(IDataReaderAdapter readerAdapter)
 		{
 			calculator.Init();
 
@@ -43,13 +62,12 @@ namespace Melon.Reports
 
 			calculator.SetField("PageNumber", PAGE_NUMBER);
 
-			var dataReader = GetDataReader();
-
-			while (dataReader.Read())
+            foreach(var element in readerAdapter.GetData())
 			{
 				RECORD_COUNT++;
 
-				calculator.UpdateFields(report.Fields, dataReader);
+                // so we should take some kind of adapter here
+				calculator.UpdateFields(report.Fields, readerAdapter);
 				calculator.EvaluateExpressions(report.Expressions);
 				calculator.SetField("GlobalRecordCount", RECORD_COUNT);
 

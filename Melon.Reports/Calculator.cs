@@ -26,11 +26,11 @@ namespace Melon.Reports
 			}
 		}
 
-		public void UpdateFields(ICollection<Field> fields, IDataReader reader)
+		public void UpdateFields(ICollection<Field> fields, IDataReaderAdapter reader)
 		{
 			foreach (var f in fields)
 			{
-				expressionBuilder.SetField(f.Name, reader[f.Name]);
+				expressionBuilder.SetField(f.Name, reader.GetValue(f.Name));
 			}
 		}
 
