@@ -17,15 +17,18 @@ namespace Melon.Reports
 		private Type compiledType;
 
 		private readonly IList<Field> fields;
-		private readonly IDictionary<string,Variable> variables;
+        private readonly IList<Parameter> parameters;
+        private readonly IDictionary<string,Variable> variables;
 		private readonly IList<Expression> expressions;
 
-		public ExpressionBuilder(IList<Field> fields, IDictionary<string, Variable> variables, IList<Expression> expressions)
+		public ExpressionBuilder(IList<Field> fields, IDictionary<string, Variable> variables, IList<Expression> expressions, IList<Parameter> parameters)
 		{
 			this.fields = fields;
 			this.expressions = expressions;
 			this.variables = variables;
-		}
+            this.parameters = parameters;
+
+        }
 
 		public void CompileExpressions()
 		{
@@ -58,10 +61,16 @@ namespace Melon.Reports
 				var f = new CodeMemberField(field.Type, field.Name) { Attributes = MemberAttributes.Public };
 				ExpressionCalculatorClass.Members.Add(f);
 			}
-            
-			//especial variables
-			
-			ExpressionCalculatorClass.Members.Add(new CodeMemberField(typeof (int), "GlobalRecordCount") {Attributes = MemberAttributes.Public});
+
+            foreach (var field in parameters)
+            {
+                var f = new CodeMemberField(field.Type, field.Name) { Attributes = MemberAttributes.Public };
+                ExpressionCalculatorClass.Members.Add(f);
+            }
+
+            //especial variables
+
+            ExpressionCalculatorClass.Members.Add(new CodeMemberField(typeof (int), "GlobalRecordCount") {Attributes = MemberAttributes.Public});
 			ExpressionCalculatorClass.Members.Add(new CodeMemberField(typeof (int), "PageNumber") {Attributes = MemberAttributes.Public});
 
 			/*

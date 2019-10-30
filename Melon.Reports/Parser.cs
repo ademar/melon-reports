@@ -45,7 +45,11 @@ namespace Melon.Reports
 								var field = new Field(reader.GetAttribute("name")) {Type = reader.GetAttribute("type")};
 								report.Fields.Add(field);
 								break;
-							case "Variable":
+                            case "Parameter":
+                                var param = new Parameter(reader.GetAttribute("name")) { Type = reader.GetAttribute("type") };
+                                report.Parameters.Add(param);
+                                break;
+                            case "Variable":
 								var variable = new Variable(reader.GetAttribute("name"))
 								             	{
 								             		Type = reader.GetAttribute("type"),
@@ -152,7 +156,7 @@ namespace Melon.Reports
 								fontSize = XmlConvert.ToInt16(reader.GetAttribute("font-size"));
 								var color = reader.GetAttribute("color");
 								var content = reader.ReadString();
-								var t = new Text(content, TextAlignment.Left, x, y) {FontSize = fontSize, rgbColor = new RgbColor(color)};
+								var t = new Text(content, TextAlignment.Left, x, y) { FontSize = fontSize, rgbColor = new RgbColor(color), FontName = reader.GetAttribute("font")};
 								band.Elements.Add(t);
 								break;
 							case "Expression":
@@ -160,7 +164,7 @@ namespace Melon.Reports
 								y = XmlConvert.ToInt16(reader.GetAttribute("y"));
 								fontSize = XmlConvert.ToInt16(reader.GetAttribute("font-size"));
 								var strtype = reader.GetAttribute("type");
-								var e = new Expression(reader.ReadString()) {X = x, Y = y, FontSize = fontSize, Type = strtype};
+								var e = new Expression(reader.ReadString()) {X = x, Y = y, FontSize = fontSize, Type = strtype, FontName = reader.GetAttribute("font") };
 								band.Elements.Add(e);
 								band.parent.Expressions.Add(e);
 								break;

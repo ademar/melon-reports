@@ -28,5 +28,6 @@ namespace Melon.Reports.Objects
         public int X { get; private set; }
         public int Y { get; private set; }
         public int FontSize { get; set; }
-	}
+        public string FontName { get; set; }
+    }
 }

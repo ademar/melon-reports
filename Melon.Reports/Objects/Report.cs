@@ -13,7 +13,8 @@ namespace Melon.Reports.Objects
 			Variables = new Dictionary<string,Variable>();
 			Groups = new ArrayList();
 			Fields = new Collection<Field>();
-			Summary = new BandCollection();
+            Parameters = new Collection<Parameter>();
+            Summary = new BandCollection();
 			PageFooter = new BandCollection();
 			Detail = new BandCollection();
 			PageHeader = new BandCollection();
@@ -52,6 +53,8 @@ namespace Melon.Reports.Objects
 
 		public IList<Font> Fonts { get; set; }
 		public Collection<Field> Fields { get; private set; }
+
+        public Collection<Parameter> Parameters { get; private set; }
         public Collection<Expression> Expressions { get; private set; }
 		public IDictionary<string, Variable> Variables { get; private set; }
 

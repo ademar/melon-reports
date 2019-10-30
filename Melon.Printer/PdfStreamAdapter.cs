@@ -26,7 +26,8 @@ namespace Melon.Printer
 			pdfStream.SaveState();
 			pdfStream.SetRGBColorFill(text.rgbColor.Red, text.rgbColor.Green, text.rgbColor.Blue);
 			pdfStream.BeginText();
-			pdfStream.SetFont(defaultFont, text.FontSize);
+            var fontName = text.FontName == null ? defaultFont : text.FontName;
+			pdfStream.SetFont(fontName, text.FontSize);
 			pdfStream.SetTextPos(text.X, (text.H - text.Y));
 			pdfStream.ShowText(text.Label);
 			pdfStream.EndText();
@@ -36,7 +37,8 @@ namespace Melon.Printer
 		public void PrintExpression(Expression e)
 		{
 			pdfStream.BeginText();
-			pdfStream.SetFont(defaultFont, e.FontSize);
+            var fontName = e.FontName == null ? defaultFont : e.FontName;
+            pdfStream.SetFont(fontName, e.FontSize);
 			pdfStream.SetTextPos(e.X, (e.H - e.Y));
 			pdfStream.ShowText(e.Value.ToString());
 			pdfStream.EndText();

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Data;
 using Melon.Reports.Objects;
@@ -14,8 +15,9 @@ namespace Melon.Reports
 		public Generator(Report report)
 		{
 			this.report = report; 
-			calculator = new Calculator(new ExpressionBuilder(report.Fields, report.Variables, report.Expressions));
-		}
+			calculator = new Calculator(new ExpressionBuilder(report.Fields, report.Variables, report.Expressions, report.Parameters));
+            calculator.Init();
+        }
 
         public Document FillReport()
         {
@@ -41,9 +43,14 @@ namespace Melon.Reports
             return BuildDocument(readerAdapter);
         }
 
+        public void SetField(string fieldName, object fieldValue)
+        {
+            calculator.SetField(fieldName, fieldValue);
+        }
+
 		private Document BuildDocument(IDataReaderAdapter readerAdapter)
 		{
-			calculator.Init();
+			
 
 			var document = new Document
 			               	{
@@ -61,6 +68,9 @@ namespace Melon.Reports
 			var PAGE_NUMBER = 1;
 
 			calculator.SetField("PageNumber", PAGE_NUMBER);
+            calculator.EvaluateExpressions(report.Expressions);
+
+            if (report.ReportHeader!=null) PutBands(page, report.ReportHeader);
 
             foreach(var element in readerAdapter.GetData())
 			{
@@ -90,7 +100,9 @@ namespace Melon.Reports
 				}
 			}
 
-			appendPageFooter(page);
+            if (report.Summary != null) PutBands(page, report.Summary);
+
+            appendPageFooter(page);
 
 			return document;
 		}
@@ -136,10 +148,11 @@ namespace Melon.Reports
 
 		private void appendPageFooter(Page page)
 		{
+            h = report.PageFooter.Height + report.BottonMargin;
 			PutBands(page,report.PageFooter);
 		}
 
-		private void appendGroupHeaders(Page page)
+        private void appendGroupHeaders(Page page)
 		{
 			foreach (Group g in report.Groups)
 			{

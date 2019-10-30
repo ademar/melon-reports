@@ -14,7 +14,7 @@ namespace Melon.Reports.Objects
 		}
 
 		public string Name { set; get; }
-        public Type Type { set; get; }
+        public string Type { set; get; }
         public Object Value { get; set; }
 	}
 }
