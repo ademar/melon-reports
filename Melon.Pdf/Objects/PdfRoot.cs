@@ -12,22 +12,17 @@ namespace Melon.Pdf.Objects
 		{
 		}
 
-		public PdfRoot(int number, PdfPages pages) : base(number)
-		{
-			this.pages = pages;
-		}
-
 		public override string ToPdf()
 		{
-			var s = string.Format(CultureInfo.InvariantCulture, "{0} {1} obj\n<< /Type /Catalog\n/Pages {2}\n", Number,
-			                      Generation, pages.Reference);
+			var s = string.Format(CultureInfo.InvariantCulture, "{0} {1} obj\n<< /Type /Catalog\n/Pages {2}\n", Number, Generation, pages.Reference);
 
 			if (outlines != null)
 			{
 				s = s + " /Outlines " + outlines.Reference + "\n";
-				s = s + " /PageMode /UseOutlines >>\n";
+				s = s + " /PageMode /UseOutlines";
 			}
-			s = s + "endobj\n";
+			s = s + " >>\nendobj\n";
+
 			return s;
 		}
 

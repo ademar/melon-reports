@@ -33,11 +33,16 @@ namespace Melon.Pdf.Objects
 
 		private void MakeRoot()
 		{
-			root = new PdfRoot(++objectcounter, MakePages());
-
+            var o = ++objectcounter;
+            
+            root = new PdfRoot(o);
 			trailer.Add(root);
 
-		}
+            var pages = MakePages();
+
+            root.setPages(pages);
+
+        }
 
 		private PdfPages MakePages()
 		{
@@ -125,14 +130,12 @@ namespace Melon.Pdf.Objects
 			trailer.Add(pdfImg);
 			resources.addImage(pdfImg);
 
-			//return imagecounter;
 			return pdfImg;
 		}
 
 		public void Print(Stream stream)
 		{
 			outputHeader(stream);
-			outputXref(stream);
 			outputTrailer(stream);
 		}
 
@@ -155,8 +158,8 @@ namespace Melon.Pdf.Objects
 			currentoffset += outputXref(stream);
 
 			var pdfTrailer = string.Format(CultureInfo.InvariantCulture,
-			                               "trailer\n<<\n/Size {0}{1}\n/Root {2}\n/Info {3} >>\nstartxref\n{4}\n%%EOF\n",
-			                               objectcounter, 1, root.Reference, info.Reference, xrefOffset);
+			                               "trailer\n<<\n/Size {0}\n/Root {2}\n/Info {3} >>\nstartxref\n{4}\n%%EOF\n",
+			                               objectcounter+1, 1, root.Reference, info.Reference, xrefOffset);
 
 			var bytes = (new ASCIIEncoding()).GetBytes(pdfTrailer);
 			stream.Write(bytes, 0, bytes.Length);
@@ -175,8 +178,7 @@ namespace Melon.Pdf.Objects
 
 			xrefOffset = currentoffset;
 
-			var pdfBuilder = new StringBuilder(string.Format(CultureInfo.InvariantCulture, "xref\n0 {0}\n0000000000 65535 f\x0d\x0a",
-				                                (objectcounter + 1)));
+			var pdfBuilder = new StringBuilder(string.Format(CultureInfo.InvariantCulture, "xref\n0 {0}\n0000000000 65535 f\x0d\x0a",objectcounter + 1));
 
 			foreach (var offset in location)
 			{

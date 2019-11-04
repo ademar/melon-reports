@@ -26,7 +26,7 @@ namespace Melon.Pdf.Objects
 		{
 			var s = string.Format(CultureInfo.InvariantCulture,
 			                      "{0} {1} obj\n<< /Type /Font\n/Subtype /{2}\n/Name /{3}\n/BaseFont /{4}", Number, Generation,
-			                      Subtype, FontName, BaseFont);
+			                      Subtype, FontName, BaseFont.Replace(" ", "_"));
 
 			if (Encoding != null)
 			{
